@@ -5,11 +5,18 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "debug": "NODE_OPTIONS='--inspect' next dev"
   },
   "dependencies": {
+    "cors": "^2.8.5",
+    "dataloader": "^2.0.0",
+    "lodash": "^4.17.20",
+    "mongodb": "^3.6.2",
     "next": "9.5.3",
     "react": "16.13.1",
-    "react-dom": "16.13.1"
+    "react-dom": "16.13.1",
+    "rxjs": "^6.6.3",
+    "swr": "^0.3.2"
   }
 }
