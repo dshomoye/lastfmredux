@@ -1,6 +1,5 @@
 import Cors from "cors";
-import { MongoClient, ObjectID } from "mongodb";
-import { getDb, batchGetSongId } from "../services/db"
+import { saveScrobble, getUser } from "../services/db"
 
 const cors = Cors({
   methods: ["GET", "POST"],
@@ -20,14 +19,11 @@ function runMiddleware(req, res, fn) {
 const handler = async (req, res) => {
   try {
     await runMiddleware(req, res, cors);
-    const db = await getDb();
     const sampleSong = {
       title: "Call",
       artist: "Joeboy",
       album: "Call"
     }
-    const foundSongs = await batchGetSongId([{title: "Begining", album: "Begining", artist: "Joeboy"}, { title: "Baby", album: "Baby", artist: "Joeboy"}, sampleSong])
-    console.log('found songs ', foundSongs)
     const {
       query: { username },
     } = req;

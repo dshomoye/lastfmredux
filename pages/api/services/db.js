@@ -15,7 +15,7 @@ import { MongoClient } from "mongodb";
 const dburi = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@lastfmredux.lwjai.gcp.mongodb.net/lastfmredux?retryWrites=true&w=majority`;
 const dbclient = new MongoClient(dburi, { useUnifiedTopology: true });
 
-export const getDb = async () => {
+const getDb = async () => {
   if (dbclient.isConnected()) {
     return dbclient.db()
   } else {
@@ -24,19 +24,24 @@ export const getDb = async () => {
   }
 }
 
-export const disconnect = async () => {
+const disconnect = async () => {
   console.log('disconnecting')
   if(dbclient.isConnected()) await dbclient.close()
 }
 
-export const getSongsCollection = async () => {
+const getSongsCollection = async () => {
   const db = await getDb()
   return db.collection('songs')
 }
 
 const getScrobblesCollection = async () => {
-  const db = await getDb;
+  const db = await getDb();
   return db.collection('scrobbles')
+}
+
+const getUsersCollection = async () => {
+  const db = await getDb()
+  return db.collection('users')
 }
 
 /**
@@ -80,13 +85,12 @@ const addSongToDb = async song => {
 }
 
 const songIdLoader = new Dataloader(batchGetSongId)
-
 /**
  * Gets the songid if song is in db.
  * will save a new song to db and return id
  * @param {Song} song 
  */
-const getSongId = async song => {
+export const getSongId = async song => {
   let songId = await songIdLoader.load(song)
   if (!songId) {
     songId = addSongToDb(song)
@@ -97,7 +101,7 @@ const getSongId = async song => {
 
 /**
  * @param {Scrobble} scrobble
- * @returns {string} the id of the added scrobble
+ * @returns {Promise<string>} the id of the added scrobble
  */
 export const saveScrobble = async scrobble => {
   const scrobbleSong = await getSongId(scrobble.song)
@@ -106,6 +110,26 @@ export const saveScrobble = async scrobble => {
     time: scrobble.time,
     song: scrobbleSong
   })
-  return result._id
+  return result.insertedId
+}
+
+
+/**
+ * @typedef {Object} User
+ * @property {string} username
+ * @property { Date } lastScrobble
+ * 
+ * get user data or create new user if new
+ * @param {string} username 
+ * @returns {Promise<User>} user data object
+ */
+export const getUser = async username => {
+  const usersCollection = await getUsersCollection()
+  let userData = await usersCollection.findOne({ username });
+  if (!userData) {
+    userData = { username, lastScrobble: new Date(0) }
+    await usersCollection.insertOne(userData)
+  }
+  return userData
 }
 
