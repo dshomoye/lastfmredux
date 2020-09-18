@@ -52,6 +52,10 @@
   font-size: 4rem;
 }
 
+.updateTitle {
+  font-size: 2rem;
+}
+
 .title,
 .description {
   text-align: center;

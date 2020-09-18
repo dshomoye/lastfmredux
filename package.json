@@ -9,6 +9,7 @@
     "debug": "NODE_OPTIONS='--inspect' next dev"
   },
   "dependencies": {
+    "classnames": "^2.2.6",
     "cors": "^2.8.5",
     "dataloader": "^2.0.0",
     "lodash": "^4.17.20",

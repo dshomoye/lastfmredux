@@ -15,7 +15,7 @@ export default function Home() {
         </h1>
 
         <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
+          <a href="/update" className={styles.card}>
             <h3>Update scrobbles &rarr;</h3>
             <p>Pull latest scrobbles from LastFM</p>
           </a>

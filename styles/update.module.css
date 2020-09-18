@@ -1,0 +1,17 @@
+.text {
+  border: 2px solid blue;
+  border-radius: 5px;
+  padding: 12px 20px;
+  margin: 0 25px;
+}
+
+.submit {
+  padding: 12px 20px;
+  background-color: black;
+  color: white;
+  border-radius: 5px;
+}
+
+.disabledSubmit {
+  background-color: gray;
+}

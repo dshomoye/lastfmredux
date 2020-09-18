@@ -26,7 +26,10 @@ const handler = async (req, res) => {
     }
     const {
       query: { username },
+      body
     } = req;
+    console.log('request body')
+    console.log(body)
     res.send(`Post: ${username}`);
   } catch (error) {
     console.log(error);
