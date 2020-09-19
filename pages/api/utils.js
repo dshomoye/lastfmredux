@@ -1,7 +1,13 @@
 export const LFApiURl = "http://ws.audioscrobbler.com/2.0/";
-import { getUserLastScrobble } from './services/db'
+import { getUserLastScrobble, saveScrobbles } from './services/db'
+import './typedef'
 
-const getScrobble = (rawScrobble) => {
+/**
+ * 
+ * @param {Object} rawScrobble 
+ * @returns {Scrobble} parsed scrobble 
+ */
+const getScrobble = (rawScrobble, username) => {
   try {
     const scrobbleTime = rawScrobble.date.uts
       ? new Date(parseInt(rawScrobble.date.uts) * 1000)
@@ -13,6 +19,7 @@ const getScrobble = (rawScrobble) => {
         album: rawScrobble.album["#text"],
       },
       time: new Date(scrobbleTime),
+      username,
     };
   } catch {
     return null;
@@ -20,13 +27,12 @@ const getScrobble = (rawScrobble) => {
 };
 
 export const saveScrobblesForPage = async (username, page, from) => {
-  const requestUrl = `${LFApiURl}?method=user.getRecentTracks&api_key=${process.env.LASTFM_KEY}&format=json&user=${username}&limit=1000&page=${page}&from=${from}`;
+  const requestUrl = `${LFApiURl}?method=user.getRecentTracks&api_key=${process.env.LASTFM_KEY}&format=json&user=${username}&limit=1000&page=${page}&from=${from+1}`;
   let response = await fetch(requestUrl)
   let scrobbleData = await response.json()
   const tracks = scrobbleData.recenttracks.track;
-  const scrobbles = tracks.map(getScrobble).filter((s) => !!s);
-  //save scrobbles to db
-  return
+  const scrobbles = tracks.map(s => getScrobble(s, username)).filter((s) => !!s);
+  if(scrobbles) await (saveScrobbles(scrobbles))
 }
 
 export const getTotalPages = async username => {
