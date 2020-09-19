@@ -9,7 +9,8 @@ import { MongoClient } from "mongodb";
  * 
  * @typedef Scrobble
  * @property {Song} song
- * @property {Date} time 
+ * @property {Date} time
+ * @property {string} username
  */
 
 const dburi = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@lastfmredux.lwjai.gcp.mongodb.net/lastfmredux?retryWrites=true&w=majority`;
@@ -37,11 +38,6 @@ const getSongsCollection = async () => {
 const getScrobblesCollection = async () => {
   const db = await getDb();
   return db.collection('scrobbles')
-}
-
-const getUsersCollection = async () => {
-  const db = await getDb()
-  return db.collection('users')
 }
 
 /**
@@ -108,28 +104,23 @@ export const saveScrobble = async scrobble => {
   const scrobblesCollection = await getScrobblesCollection()
   const result = await scrobblesCollection.insertOne({
     time: scrobble.time,
-    song: scrobbleSong
+    song: scrobbleSong,
+    username: scrobble.username
   })
   return result.insertedId
 }
 
 
 /**
- * @typedef {Object} User
- * @property {string} username
- * @property { Date } lastScrobble
- * 
- * get user data or create new user if new
+ * get last updated scrobble for user
  * @param {string} username 
- * @returns {Promise<User>} user data object
+ * @returns {Promise<Date>}
  */
-export const getUser = async username => {
-  const usersCollection = await getUsersCollection()
-  let userData = await usersCollection.findOne({ username });
-  if (!userData) {
-    userData = { username, lastScrobble: new Date(0) }
-    await usersCollection.insertOne(userData)
-  }
-  return userData
+export const getUserLastScrobble = async username => {
+  const scrobblesCollection = await getScrobblesCollection()
+  const queryRes = scrobblesCollection.find({username}).sort({time: -1}).limit(1)
+  const latest = await queryRes.next()
+  if (latest) return latest.time
+  else return new Date(0)
 }
 
