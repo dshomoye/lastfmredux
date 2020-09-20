@@ -7,9 +7,9 @@ const cors = Cors({methods: ["GET", "POST"],});
 export default async (req, res) => {
   const requestStart = new Date()
   await runMiddleware(req, res, cors)
-  await topWeeklySongs('sonofatailor')
+  const queryResult = await topWeeklySongs('sonofatailor')
   const runTime = (new Date().getTime() - requestStart.getTime())
   console.log(`${req.method}: Run Time: ${runTime}ms`)
   res.statusCode = 200
-  res.json({ name: 'John Doe' })
+  res.json({ data: queryResult.map(d => ({listens: d.listens, ...d._id})) })
 }

@@ -76,6 +76,9 @@ export const topWeeklySongs = async (
         week: {
           $week: "$time",
         },
+        'year': {
+          '$year': '$time'
+        }, 
         song: "$song.title",
         artist: "$song.artist",
         album: "$song.album",
@@ -84,8 +87,9 @@ export const topWeeklySongs = async (
     {
       $group: {
         _id: {
-          song: "$song",
           week: "$week",
+          year: '$year',
+          song: "$song",
           album: "$album",
           artist: "$artist",
         },
@@ -93,11 +97,6 @@ export const topWeeklySongs = async (
           $sum: 1,
         },
       },
-    },
-    {
-      '$sort': {
-        'listens': -1
-      }
     }
   ]
   const cursor = scrobblesCollection.aggregate(pipeline);
