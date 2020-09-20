@@ -32,7 +32,7 @@ export const saveScrobblesForPage = async (username, page, from) => {
   let scrobbleData = await response.json()
   const tracks = scrobbleData.recenttracks.track;
   const scrobbles = tracks.map(s => getScrobble(s, username)).filter((s) => !!s);
-  if(scrobbles) await (saveScrobbles(scrobbles))
+  if(scrobbles && scrobbles.length > 0) await (saveScrobbles(scrobbles))
 }
 
 export const getTotalPages = async username => {
@@ -51,4 +51,15 @@ export const getTotalPages = async username => {
     console.error(error)
     return null;
   }
+}
+
+export const runMiddleware = (req, res, fn) => {
+  return new Promise((resolve, reject) => {
+    fn(req, res, (result) => {
+      if (result instanceof Error) {
+        return reject(result);
+      }
+      return resolve(result);
+    });
+  });
 }

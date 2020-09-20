@@ -1,21 +1,8 @@
 import Cors from "cors";
-import { getTotalPages, saveScrobblesForPage } from "../utils";
-import { createIndex } from '../services/db'
+import { getTotalPages, saveScrobblesForPage, runMiddleware } from "../../utils";
+import { createIndex } from '../../services/db'
 
-const cors = Cors({
-  methods: ["GET", "POST"],
-});
-
-function runMiddleware(req, res, fn) {
-  return new Promise((resolve, reject) => {
-    fn(req, res, (result) => {
-      if (result instanceof Error) {
-        return reject(result);
-      }
-      return resolve(result);
-    });
-  });
-}
+const cors = Cors({methods: ["GET", "POST"],});
 
 const handler = async (req, res) => {
   try {
