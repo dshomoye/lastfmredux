@@ -54,10 +54,10 @@ export const createIndex = async () => {
 };
 
 const today = new Date();
-const sixWeeksAgo = subWeeks(startOfWeek(today), 6);
+const threeWeeksAgo = subWeeks(startOfWeek(today), 3);
 export const topWeeklySongs = async (
   username,
-  from = sixWeeksAgo,
+  from = threeWeeksAgo,
   to = today
 ) => {
   const scrobblesCollection = await getScrobblesCollection();
@@ -104,6 +104,5 @@ export const topWeeklySongs = async (
   await cursor.forEach((entry) => {
     result.push(entry);
   });
-  console.log(result.length)
   return result;
 };
