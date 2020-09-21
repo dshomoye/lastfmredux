@@ -1,5 +1,5 @@
 import Head from "next/head";
-import BarWeekly from "../components/BarWeekly";
+import BarWeekly from '../components/BarWeekly'
 import styles from '../styles/stats.module.css'
 
 const Stats = () => {
