@@ -1,7 +1,7 @@
 import { ResponsiveBar } from '@nivo/bar'
 import {useEffect, useState} from 'react'
 
-import {getWeeklySongsFromListens} from '../../utils'
+import {getWeeklySongsFromPlaytimes} from '../../utils'
 import styles from './styles.module.css'
 
 const sample = [
@@ -22,7 +22,7 @@ const sample = [
   }
 ]
 
-const BarWeekly = () => {
+const BarWeekly = ({xAxis, yAxis}) => {
   const [ data, setData] = useState(sample)
   const [keys, setKeys] = useState(['Life', 'Baby', 'Begining', 'Joy'])
   const [loading, setLoading] = useState(false)
@@ -30,9 +30,9 @@ const BarWeekly = () => {
   useEffect(() => {
     setLoading(true)
     const getData = async () => {
-      const response = await fetch('/api/scrobbles/sonofatailor/query')
+      const response = await fetch('/api/scrobbles/sonofatailor/query?op=topweeklysongs')
       const responseData = await response.json()
-      const {data: rdata, keys: rkeys} = getWeeklySongsFromListens(responseData.data)
+      const {data: rdata, keys: rkeys} = getWeeklySongsFromPlaytimes(responseData.data)
       setData(rdata);
       setKeys(rkeys);
       setLoading(false)

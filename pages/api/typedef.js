@@ -9,8 +9,8 @@
  * @property {Date} time
  * @property {string} username
  * 
- * @typedef WeeklyListens
- * @property {Number} listens
+ * @typedef WeeklySongPlays
+ * @property {Number} playtimes
  * @property {string} song
  * @property {string} artist
  * @property {string} album

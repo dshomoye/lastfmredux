@@ -93,16 +93,19 @@ export const topWeeklySongs = async (
           album: "$album",
           artist: "$artist",
         },
-        listens: {
+        playtimes: {
           $sum: 1,
         },
       },
     }
   ]
   const cursor = scrobblesCollection.aggregate(pipeline);
+  /**
+   * @type WeeklySongPlays[]
+   */
   const result = [];
   await cursor.forEach((entry) => {
     result.push(entry);
   });
-  return result;
+  return result.map(d => ({playtimes: d.playtimes, ...d._id}) );
 };

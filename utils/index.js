@@ -26,24 +26,24 @@ export function saveScrobbles(username, totalPages, fromTime) {
 
 /**
  *
- * @param {WeeklyListens[]} data
+ * @param {WeeklySongPlays[]} data
  * @param {Number} top
  */
-export const getWeeklySongsFromListens = (data, top = 3) => {
-  const weeklyListens = groupBy(data, (d) => getDateOfISOWeek(d.week, d.year).getTime());
-  Object.keys(weeklyListens).map((k) => {
-    weeklyListens[k] = weeklyListens[k]
-    .sort((a, b) => b.listens - a.listens)
+export const getWeeklySongsFromPlaytimes = (data, top = 3) => {
+  const weeklyPlaytimes = groupBy(data, (d) => getDateOfISOWeek(d.week, d.year).getTime());
+  Object.keys(weeklyPlaytimes).map((k) => {
+    weeklyPlaytimes[k] = weeklyPlaytimes[k]
+    .sort((a, b) => b.Playtimes - a.Playtimes)
     .slice(0, top);
   });
   const uniqueSongs = new Set()
-  let result = Object.keys(weeklyListens).map(k => {
+  let result = Object.keys(weeklyPlaytimes).map(k => {
     const groupDate = new Date(parseInt(k))
     const id = `${groupDate.getMonth()}/${groupDate.getDate()}/${groupDate.getFullYear()}`
     const weekData = {id, timestamp: k}
-    weeklyListens[k].map(listen => {
+    weeklyPlaytimes[k].map(listen => {
       const label = `${listen.artist}: ${listen.song}`
-      weekData[label] = listen.listens
+      weekData[label] = listen.playtimes
       uniqueSongs.add(label)
     })
     return weekData
