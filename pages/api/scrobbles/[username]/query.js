@@ -1,6 +1,7 @@
 import Cors from "cors";
+
 import {runMiddleware} from '../../utils'
-import { topWeeklySongs } from '../../services/db'
+import { topSongsInTime } from '../../services/db'
 
 const cors = Cors({methods: ["GET", "POST"],});
 
@@ -11,13 +12,21 @@ export default async (req, res) => {
     const { query, body } = req;
     console.log(query)
     let resData
+    let queryResult
     switch (query.op) {
-      case 'topweeklysongs':
-        const queryResult = await topWeeklySongs('sonofatailor')
-        res.status(200)
-        res.json({ data: queryResult })
-        break;
-        default:
+      case 'topsongs':
+        let from;
+        let to;
+        if (query.from) {
+          from = new Date(parseInt(query.from))
+        }
+        if (query.to) {
+          to = new Date(parseInt(query.to))
+        }
+        queryResult = await topSongsInTime(query.username, from, to);
+        res.json({data: queryResult})
+        break
+      default:
           resData = { message: 'Not Supported'}
           res.status(400);
           res.send(resData)

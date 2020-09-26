@@ -16,4 +16,10 @@
  * @property {string} album
  * @property {Number} week
  * @property {Number} year
+ * 
+ * @typedef WeeklyArtistPlays
+ * @property {Number} playtimes
+ * @property {string} artist
+ * @property {Number} week
+ * @property {Number} year
  */

@@ -1,7 +1,7 @@
 import { MongoClient } from "mongodb";
-import { startOfWeek, subWeeks } from "date-fns";
+import { subDays } from "date-fns";
 
-import "../typedef";
+import "../../typedef";
 
 const dburi = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@lastfmredux.lwjai.gcp.mongodb.net/lastfmredux?retryWrites=true&w=majority`;
 const dbclient = new MongoClient(dburi, { useUnifiedTopology: true });
@@ -54,58 +54,41 @@ export const createIndex = async () => {
 };
 
 const today = new Date();
-const threeWeeksAgo = subWeeks(startOfWeek(today), 3);
-export const topWeeklySongs = async (
-  username,
-  from = threeWeeksAgo,
-  to = today
-) => {
+const lastWeek = subDays(today, 7);
+export const topSongsInTime = async (username, from=lastWeek, to=today, limit=10) => {
+  const earliest = from || lastWeek;
+  const latest = to || today
+
   const scrobblesCollection = await getScrobblesCollection();
   const pipeline = [
     {
-      $match: {
-        username,
+      '$match': {
+        'username': username,
         time: {
-          $gt: from,
-          $lt: to,
-        },
-      },
-    },
-    {
-      $project: {
-        week: {
-          $week: "$time",
-        },
-        'year': {
-          '$year': '$time'
+          $gte: earliest,
+          $lte: latest,
+        }
+      }
+    }, {
+      '$group': {
+        '_id': {
+          'title': '$song.title', 
+          'artist': '$song.artist'
         }, 
-        song: "$song.title",
-        artist: "$song.artist",
-        album: "$song.album",
-      },
-    },
-    {
-      $group: {
-        _id: {
-          week: "$week",
-          year: '$year',
-          song: "$song",
-          album: "$album",
-          artist: "$artist",
-        },
-        playtimes: {
-          $sum: 1,
-        },
-      },
+        'plays': {
+          '$sum': 1
+        }
+      }
+    }, {
+      '$sort': {
+        'plays': -1
+      }
+    }, {
+      '$limit': limit
     }
   ]
   const cursor = scrobblesCollection.aggregate(pipeline);
-  /**
-   * @type WeeklySongPlays[]
-   */
   const result = [];
-  await cursor.forEach((entry) => {
-    result.push(entry);
-  });
-  return result.map(d => ({playtimes: d.playtimes, ...d._id}) );
-};
+  await cursor.forEach(s => result.push(s));
+  return result.map(s => ({plays: s.plays, ...s._id}));
+}

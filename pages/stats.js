@@ -1,7 +1,11 @@
 import Head from "next/head";
-import BarWeekly from '../components/BarWeekly'
+import TopSongsChart from "../components/TopSongsChart";
 
-const VizContainer = ({children}) => <div className="flex-initial w-full h-56 lg:w-1/2 my-8">{children}</div>
+const VizContainer = ({ children }) => (
+  <div className="flex-initial w-full h-56 lg:w-1/2 my-8 overflow-visible">
+    {children}
+  </div>
+);
 
 const Stats = () => {
   return (
@@ -10,19 +14,16 @@ const Stats = () => {
         <title>View Stats</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="container my-32">
+      <main className="container">
         <div className="flex flex-wrap">
           <VizContainer>
-            <h4>Top 3 songs/week.</h4>
-            <BarWeekly />
-          </VizContainer>
-          <VizContainer>
-            <BarWeekly />
+            <h4>Top songs in time range.</h4>
+            <TopSongsChart username="sonofatailor" />
           </VizContainer>
         </div>
       </main>
     </div>
-  )
-}
+  );
+};
 
 export default Stats;
