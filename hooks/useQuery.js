@@ -31,8 +31,9 @@ const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 const useQuery = (op, username) => {
   const [earliest, setEarliest] = useState(last7Days);
+  const [limit, setLimit] = useState(op === 'artisttree' ? 100 :10)
   const { data, error } = useSWR(
-    `/api/scrobbles/${username}/query?op=${op}&&from=${earliest}`,
+    `/api/scrobbles/${username}/query?op=${op}&&from=${earliest}&limit=${limit}`,
     fetcher
   );
 
@@ -43,6 +44,8 @@ const useQuery = (op, username) => {
     earliest,
     setEarliest,
     timeRanges,
+    limit, 
+    setLimit: v => {if (v > 0) setLimit(v)},
   }
 };
 

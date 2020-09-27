@@ -21,10 +21,12 @@
  * 
  * 
  * @typedef AlbumStats
- * @property {Number} value
  * @property {Object<string, SongPlays>} songs
  * 
  * @typedef ArtistStats
- * @property {Number} value
  * @property {Object<string, AlbumStats>} albums
+ * 
+ * @typedef DailyCount
+ * @property {string} date
+ * @property {Number} count
  */

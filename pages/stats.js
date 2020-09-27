@@ -16,13 +16,14 @@ const Stats = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="container">
+        <h1 className="text-2xl text-center">Listening Statistics</h1>
         <div className="flex flex-wrap">
           <VizContainer>
-            <h4>Top songs in time range.</h4>
+            <h3>Top 10 songs</h3>
             <TopSongsChart username="sonofatailor" />
           </VizContainer>
           <VizContainer>
-            <h4>Tree View</h4>
+            <h3>Tree View</h3>
             <Bubble username="sonofatailor" />
           </VizContainer>
         </div>

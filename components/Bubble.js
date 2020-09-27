@@ -4,7 +4,15 @@ import { useQuery } from "../hooks/useQuery";
 import styles from "./styles.module.css";
 
 const Bubble = ({ username }) => {
-  const {data, loading, earliest, setEarliest, timeRanges} = useQuery('artisttree', username)
+  const {
+    data,
+    loading,
+    earliest,
+    setEarliest,
+    timeRanges,
+    limit,
+    setLimit,
+  } = useQuery("artisttree", username);
 
   if (loading) {
     return <div className={styles.loader} />;
@@ -12,12 +20,30 @@ const Bubble = ({ username }) => {
 
   const timeSelect = (
     <select value={earliest} onChange={(e) => setEarliest(e.target.value)}>
-      {timeRanges.map(t => (<option value={t.value} >{t.label}</option>))}
+      {timeRanges.map((t) => (
+        <option value={t.value}>{t.label}</option>
+      ))}
     </select>
-  )
+  );
   return (
     <div className="h-full w-full">
-      {timeSelect}
+      <div
+        id="controls"
+        className="flex my-2 border-solid justify-items-start mx-5"
+      >
+        <div className="flex-1">{timeSelect}</div>
+        <div className="flex-1">
+          <label for="limit">No. of songs</label>{" "}
+          <input
+            name="limit"
+            type="number"
+            value={limit}
+            onChange={(e) => setLimit(e.target.value)}
+            className="bg-gray-300"
+            disabled={loading}
+          />
+        </div>
+      </div>
       <ResponsiveBubbleHtml
         root={data.data}
         margin={{ top: 10, right: 10, bottom: 10, left: 10 }}

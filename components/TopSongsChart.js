@@ -29,7 +29,9 @@ const TopSongsChart = ({ username }) => {
 
   return (
     <div style={{ height: "100%", width: "100%" }}>
-      {timeSelect}
+      <div className="my-2">
+        {timeSelect}
+      </div>
       <ResponsivePie
         data={getPieDataFromJson(data.data)}
         innerRadius={0.5}

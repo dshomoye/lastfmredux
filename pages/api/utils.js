@@ -86,10 +86,9 @@ export const getGenreTreeFromSongs = async (songPlays) => {
     })
     artistsNode[artistName] = artistNode
   })
-  console.log(artistsNode)
   const root = {
     children: [],
-    name: "Total"
+    name: "All Artists"
   }
   Object.keys(artistsNode).forEach(artist => {
     const artnode = artistsNode[artist]

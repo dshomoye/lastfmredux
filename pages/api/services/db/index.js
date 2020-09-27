@@ -1,5 +1,5 @@
 import { MongoClient } from "mongodb";
-import { subDays } from "date-fns";
+import { subDays, startOfYear } from "date-fns";
 
 import "../../typedef";
 
@@ -66,7 +66,7 @@ const lastWeek = subDays(today, 7);
 export const topSongsInTime = async (username, from=lastWeek, to=today, limit=10) => {
   const earliest = from || lastWeek;
   const latest = to || today
-  limit = limit || 10
+  limit = limit ? parseInt(limit) : 10
 
   const scrobblesCollection = await getScrobblesCollection();
   const pipeline = [
@@ -101,4 +101,52 @@ export const topSongsInTime = async (username, from=lastWeek, to=today, limit=10
   const result = [];
   await cursor.forEach(s => result.push(s));
   return result.map(s => ({plays: s.plays, ...s._id}));
+}
+
+const yearStart = startOfYear(today)
+/**
+ * 
+ * @param {string} username 
+ * @param {Date} from 
+ * @param {Date} to 
+ * @returns {Promise<DailyCount[]>}
+ */
+export const dailyPlayCount = async (username, from=today, to=yearStart) => {
+  const earliest = from || yearStart
+  const latest = to || today
+  const scrobblesCollection = await getScrobblesCollection();
+  const pipeline = [
+    {
+      '$match': {
+        'username': username,
+        'time': {
+          $gte: earliest,
+          $lte: latest
+        }
+      }
+    }, {
+      '$project': {
+        'date': {
+          '$dateToString': {
+            'date': '$time', 
+            'format': '%Y-%m-%d'
+          }
+        }
+      }
+    }, {
+      '$group': {
+        '_id': {
+          'date': '$date'
+        }, 
+        'count': {
+          '$sum': 1
+        }
+      }
+    }
+  ]
+  const cursor = scrobblesCollection.aggregate(pipeline);
+  const result = [];
+  await cursor.forEach(s => result.push(s));
+  console.log(result)
+  return result
 }
