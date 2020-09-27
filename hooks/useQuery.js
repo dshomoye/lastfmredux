@@ -1,6 +1,7 @@
 import { useState } from "react";
 import useSWR from "swr";
-import { subYears, subMonths, subDays } from "date-fns";
+import { subYears, subMonths, subDays, startOfYear } from "date-fns";
+import { QueryOps } from "../utils";
 
 const today = new Date();
 const last7Days = subDays(today, 7).getTime();
@@ -27,13 +28,32 @@ const timeRanges = [
   }
 ]
 
+const getQuery = (op, username, from=null, to=null, limit=null) => {
+  let baseQ = `/api/scrobbles/${username}/query?op=${op}`
+  if (from) baseQ += `&from=${from}`
+  if (to) baseQ += `&to=${to}`
+  if (op === QueryOps.dailycount) {
+    return baseQ
+  }
+  if (limit) baseQ += `&limit=${limit}`
+  return baseQ
+}
+
+const getEarliest = (op) => {
+  if (op === QueryOps.dailycount) {
+    return startOfYear(subYears(today, 1)).getTime()
+  }
+  return last7Days
+}
+
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 const useQuery = (op, username) => {
-  const [earliest, setEarliest] = useState(last7Days);
+  const [earliest, setEarliest] = useState(getEarliest(op));
+  const [latest, setLatest] = useState(today.getTime())
   const [limit, setLimit] = useState(op === 'artisttree' ? 100 :10)
   const { data, error } = useSWR(
-    `/api/scrobbles/${username}/query?op=${op}&&from=${earliest}&limit=${limit}`,
+    getQuery(op, username, earliest, latest, limit),
     fetcher
   );
 
@@ -46,6 +66,8 @@ const useQuery = (op, username) => {
     timeRanges,
     limit, 
     setLimit: v => {if (v > 0) setLimit(v)},
+    latest, 
+    setLatest,
   }
 };
 

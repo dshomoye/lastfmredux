@@ -9,6 +9,7 @@
     "debug": "NODE_OPTIONS='--inspect' next dev"
   },
   "dependencies": {
+    "@nivo/calendar": "^0.62.0",
     "@nivo/circle-packing": "^0.62.0",
     "@nivo/pie": "^0.62.0",
     "classnames": "^2.2.6",

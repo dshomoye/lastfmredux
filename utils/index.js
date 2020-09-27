@@ -22,3 +22,10 @@ export function saveScrobbles(username, totalPages, fromTime) {
   }
   return from(promises).pipe(mergeAll());
 }
+
+
+export const QueryOps = {
+  topsongs: 'topsongs',
+  artisttree: 'artisttree',
+  dailycount: 'dailycount'
+}

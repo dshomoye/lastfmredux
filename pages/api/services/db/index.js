@@ -111,9 +111,11 @@ const yearStart = startOfYear(today)
  * @param {Date} to 
  * @returns {Promise<DailyCount[]>}
  */
-export const dailyPlayCount = async (username, from=today, to=yearStart) => {
+export const dailyPlayCount = async (username, from=yearStart, to=today) => {
+  console.log(from, to)
   const earliest = from || yearStart
   const latest = to || today
+  console.log(from, to)
   const scrobblesCollection = await getScrobblesCollection();
   const pipeline = [
     {
@@ -147,6 +149,5 @@ export const dailyPlayCount = async (username, from=today, to=yearStart) => {
   const cursor = scrobblesCollection.aggregate(pipeline);
   const result = [];
   await cursor.forEach(s => result.push(s));
-  console.log(result)
-  return result
+  return result.map(r => ({value:r.count, day:r._id.date}))
 }
