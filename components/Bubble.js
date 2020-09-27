@@ -41,6 +41,7 @@ const Bubble = ({ username }) => {
             onChange={(e) => setLimit(e.target.value)}
             className="bg-gray-300"
             disabled={loading}
+            step={50}
           />
         </div>
       </div>
