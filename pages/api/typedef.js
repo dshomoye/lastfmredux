@@ -9,17 +9,22 @@
  * @property {Date} time
  * @property {string} username
  * 
- * @typedef WeeklySongPlays
- * @property {Number} playtimes
- * @property {string} song
+ * @typedef SongPlays
+ * @property {string} title
  * @property {string} artist
  * @property {string} album
- * @property {Number} week
- * @property {Number} year
+ * @property {Number} plays
  * 
- * @typedef WeeklyArtistPlays
- * @property {Number} playtimes
+ * @typedef ArtistPlays
  * @property {string} artist
- * @property {Number} week
- * @property {Number} year
+ * @property {Number} plays
+ * 
+ * 
+ * @typedef AlbumStats
+ * @property {Number} value
+ * @property {Object<string, SongPlays>} songs
+ * 
+ * @typedef ArtistStats
+ * @property {Number} value
+ * @property {Object<string, AlbumStats>} albums
  */

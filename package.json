@@ -9,7 +9,7 @@
     "debug": "NODE_OPTIONS='--inspect' next dev"
   },
   "dependencies": {
-    "@nivo/bar": "^0.62.0",
+    "@nivo/circle-packing": "^0.62.0",
     "@nivo/pie": "^0.62.0",
     "classnames": "^2.2.6",
     "cors": "^2.8.5",

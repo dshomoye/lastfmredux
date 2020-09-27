@@ -1,3 +1,5 @@
+import { groupBy } from 'lodash'
+
 export const LFApiURl = "http://ws.audioscrobbler.com/2.0/";
 import { getUserLastScrobble, saveScrobbles } from './services/db'
 import './typedef'
@@ -62,4 +64,53 @@ export const runMiddleware = (req, res, fn) => {
       return resolve(result);
     });
   });
+}
+
+/**
+ * @param {SongPlays[]} songPlays
+ * @returns {Promise<Object<string, ArtistStats>>}
+ */
+export const getGenreTreeFromSongs = async (songPlays) => {
+  const artistsNode = groupBy(songPlays, s => s.artist)
+  Object.keys(artistsNode).map(artistName => {
+    const artistAlbums = groupBy(artistsNode[artistName], s => s.album)
+    const artistNode = {
+      albums: artistAlbums
+    }
+    Object.keys(artistAlbums).forEach(album => {
+      const albumSongs = artistAlbums[album]
+      const albumNode = {
+        songs: albumSongs
+      }
+      artistAlbums[album] = albumNode
+    })
+    artistsNode[artistName] = artistNode
+  })
+  console.log(artistsNode)
+  const root = {
+    children: [],
+    name: "Total"
+  }
+  Object.keys(artistsNode).forEach(artist => {
+    const artnode = artistsNode[artist]
+    const artistRoot = {
+      name: artist,
+      children: [],
+      type: 'artist',
+    }
+    Object.keys(artnode.albums).forEach(album => {
+      const albnode = artnode.albums[album]
+      albnode.songs.map((song, index) => {
+        albnode.songs[index]={...song, name:song.title}
+      })
+      const albRoot = {
+        name: album,
+        children: albnode.songs,
+        type: 'album'
+      }
+      artistRoot.children.push(albRoot)
+    })
+    root.children.push(artistRoot)
+  })
+  return root
 }

@@ -55,9 +55,18 @@ export const createIndex = async () => {
 
 const today = new Date();
 const lastWeek = subDays(today, 7);
+/**
+ * 
+ * @param {string} username 
+ * @param {Date} from 
+ * @param {Date} to 
+ * @param {Number} limit 
+ * @returns {Promise<SongPlays[]>}
+ */
 export const topSongsInTime = async (username, from=lastWeek, to=today, limit=10) => {
   const earliest = from || lastWeek;
   const latest = to || today
+  limit = limit || 10
 
   const scrobblesCollection = await getScrobblesCollection();
   const pipeline = [
@@ -73,7 +82,8 @@ export const topSongsInTime = async (username, from=lastWeek, to=today, limit=10
       '$group': {
         '_id': {
           'title': '$song.title', 
-          'artist': '$song.artist'
+          'artist': '$song.artist',
+          'album': '$song.album'
         }, 
         'plays': {
           '$sum': 1
