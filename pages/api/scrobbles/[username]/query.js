@@ -2,6 +2,7 @@ import Cors from "cors";
 
 import {runMiddleware, getGenreTreeFromSongs} from '../../utils'
 import { topSongsInTime, dailyPlayCount } from '../../services/db'
+import { QueryOps } from "../../../../utils";
 
 const cors = Cors({methods: ["GET", "POST"],});
 
@@ -26,16 +27,16 @@ export default async (req, res) => {
     let resData
     let queryResult
     switch (query.op) {
-      case 'topsongs':
+      case QueryOps.topsongs:
         queryResult = await topSongsInTime(query.username, ...timeRangeFromQuery(query));
         res.json({data: queryResult})
         break
-      case 'artisttree':
+      case QueryOps.artisttree:
         const topSongs = await topSongsInTime(query.username, ...timeRangeFromQuery(query), query.limit);
         const root =await getGenreTreeFromSongs(topSongs)
         res.json({data: root})
         break
-      case 'dailycount':
+      case QueryOps.dailycount:
         const dailyCount = await dailyPlayCount(query.username, ...timeRangeFromQuery(query))
         res.json({data: dailyCount})
         break

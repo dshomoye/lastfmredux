@@ -21,6 +21,7 @@
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "rxjs": "^6.6.3",
+    "spotify-web-api-node": "^4.0.0",
     "swr": "^0.3.2"
   },
   "devDependencies": {

@@ -1,7 +1,9 @@
 import { MongoClient } from "mongodb";
 import { subDays, startOfYear } from "date-fns";
+import {differenceBy} from 'lodash'
 
 import "../../typedef";
+import { allScrobbleArtistsPipeline, dailyPlaysCountPipeline, topSongsPipeline } from "./pipelines";
 
 const dburi = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@lastfmredux.lwjai.gcp.mongodb.net/lastfmredux?retryWrites=true&w=majority`;
 const dbclient = new MongoClient(dburi, { useUnifiedTopology: true });
@@ -19,6 +21,11 @@ const getScrobblesCollection = async () => {
   const db = await getDb();
   return db.collection("scrobbles");
 };
+
+const getArtistsCollection = async () => {
+  const db = await getDb();
+  return db.collection("artists")
+}
 
 /**
  * @param {Array<Scrobble>} scrobbles
@@ -69,34 +76,7 @@ export const topSongsInTime = async (username, from=lastWeek, to=today, limit=10
   limit = limit ? parseInt(limit) : 10
 
   const scrobblesCollection = await getScrobblesCollection();
-  const pipeline = [
-    {
-      '$match': {
-        'username': username,
-        time: {
-          $gte: earliest,
-          $lte: latest,
-        }
-      }
-    }, {
-      '$group': {
-        '_id': {
-          'title': '$song.title', 
-          'artist': '$song.artist',
-          'album': '$song.album'
-        }, 
-        'plays': {
-          '$sum': 1
-        }
-      }
-    }, {
-      '$sort': {
-        'plays': -1
-      }
-    }, {
-      '$limit': limit
-    }
-  ]
+  const pipeline = topSongsPipeline(username, earliest, latest, limit)
   const cursor = scrobblesCollection.aggregate(pipeline);
   const result = [];
   await cursor.forEach(s => result.push(s));
@@ -112,42 +92,35 @@ const yearStart = startOfYear(today)
  * @returns {Promise<DailyCount[]>}
  */
 export const dailyPlayCount = async (username, from=yearStart, to=today) => {
-  console.log(from, to)
   const earliest = from || yearStart
   const latest = to || today
-  console.log(from, to)
   const scrobblesCollection = await getScrobblesCollection();
-  const pipeline = [
-    {
-      '$match': {
-        'username': username,
-        'time': {
-          $gte: earliest,
-          $lte: latest
-        }
-      }
-    }, {
-      '$project': {
-        'date': {
-          '$dateToString': {
-            'date': '$time', 
-            'format': '%Y-%m-%d'
-          }
-        }
-      }
-    }, {
-      '$group': {
-        '_id': {
-          'date': '$date'
-        }, 
-        'count': {
-          '$sum': 1
-        }
-      }
-    }
-  ]
+  const pipeline = dailyPlaysCountPipeline(username, earliest, latest)
   const cursor = scrobblesCollection.aggregate(pipeline);
   const result = [];
   await cursor.forEach(s => result.push(s));
   return result.map(r => ({value:r.count, day:r._id.date}))
+}
+
+export const getUntaggedArtists = async () => {
+  const scrobblesCollection = await getScrobblesCollection();
+  const artistsCollection = await getArtistsCollection();
+
+  const allArtistsCursor = scrobblesCollection.aggregate(allScrobbleArtistsPipeline)
+  const allArtists = []
+  const taggedArtistsCursor = artistsCollection.find().project({ artist: 1, _id: 0});
+  const taggedArtists = []
+  const queriesPromises = [
+    allArtistsCursor.forEach(a => allArtists.push({artist: a._id.artist, song: a.song})),
+    taggedArtistsCursor.forEach(a => taggedArtists.push(a))
+  ]
+  await Promise.all(queriesPromises)
+  const untaggedArtists = differenceBy(allArtists, taggedArtists, (a) => a.artist)
+  return untaggedArtists
+}
+
+export const saveArtists = async (artistsData) => {
+  const artistsCollection = await getArtistsCollection()
+  const result = await artistsCollection.insertMany(artistsData)
+  return result.insertedIds
 }

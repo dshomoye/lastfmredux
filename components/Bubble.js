@@ -39,7 +39,7 @@ const Bubble = ({ username }) => {
             type="number"
             value={limit}
             onChange={(e) => setLimit(e.target.value)}
-            className="bg-gray-300"
+            className="bg-gray-300 w-12"
             disabled={loading}
             step={50}
           />

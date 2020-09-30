@@ -13,7 +13,6 @@ const handler = async (req, res) => {
     res.status(400)
     if (req.method === 'GET') {
       resData = await getTotalPages(username)
-      await createIndex()
       res.status(200)
     } else if (req.method === 'POST') {
       if (body && body.page && (body.from || body.from === 0)) {

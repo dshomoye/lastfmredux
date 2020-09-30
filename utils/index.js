@@ -27,5 +27,11 @@ export function saveScrobbles(username, totalPages, fromTime) {
 export const QueryOps = {
   topsongs: 'topsongs',
   artisttree: 'artisttree',
-  dailycount: 'dailycount'
+  dailycount: 'dailycount',
+}
+
+export const MetadataOps = {
+  untaggedartists: 'untaggedartists',
+  updateartists: 'updateartists',
+  getartistspotifyid: 'getartistspotifyid'
 }
