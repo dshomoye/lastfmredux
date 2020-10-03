@@ -68,6 +68,9 @@ export const topSongsPipeline = (username, earliest, latest, limit) => {
 
 export const allScrobbleArtistsPipeline = [
   {
+    $match: {
+      
+    },
     $group: {
       _id: {
         artist: "$song.artist",

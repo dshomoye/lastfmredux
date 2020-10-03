@@ -30,9 +30,8 @@ export const getArtistId = async (artistData) => {
     }
     spotify.searchTracks(`artist:${artistData.artist} ${artistData.song.title}`).then(
       data => {
-        const artist = data?.body?.tracks?.items[0].artists[0]
-        console.log('artist ', artist)
-        res(artist.id)
+        const artist = data?.body?.tracks?.items[0]?.artists[0]
+        res(artist?.id)
       },
       err => {
         console.error('Error getting artist id ', err)
@@ -52,11 +51,12 @@ export const getArtistsMetadata = async artistIds => {
           genres: artist.genres,
           image: artist.images.length > 0 ? artist.images.pop() : null,
           artist: artist.name,
+          spotifyId: artist.id
         })))
       },
       error => {
         console.error(error)
-        rej(err)
+        rej(error)
       }
     )
   })

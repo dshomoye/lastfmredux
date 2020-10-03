@@ -1,6 +1,6 @@
 import { MongoClient } from "mongodb";
 import { subDays, startOfYear } from "date-fns";
-import {differenceBy} from 'lodash'
+import {differenceBy, differenceWith, result, sortBy} from 'lodash'
 
 import "../../typedef";
 import { allScrobbleArtistsPipeline, dailyPlaysCountPipeline, topSongsPipeline } from "./pipelines";
@@ -107,20 +107,31 @@ export const getUntaggedArtists = async () => {
   const artistsCollection = await getArtistsCollection();
 
   const allArtistsCursor = scrobblesCollection.aggregate(allScrobbleArtistsPipeline)
-  const allArtists = []
   const taggedArtistsCursor = artistsCollection.find().project({ artist: 1, _id: 0});
-  const taggedArtists = []
+  let allArtists = []
+  let taggedArtists = []
   const queriesPromises = [
     allArtistsCursor.forEach(a => allArtists.push({artist: a._id.artist, song: a.song})),
-    taggedArtistsCursor.forEach(a => taggedArtists.push(a))
+    taggedArtistsCursor.forEach(a => taggedArtists.push(a)),
   ]
   await Promise.all(queriesPromises)
-  const untaggedArtists = differenceBy(allArtists, taggedArtists, (a) => a.artist)
+  allArtists = sortBy(allArtists, ['artist'])
+  taggedArtists = sortBy(taggedArtists, ['artist'])
+
+  let untaggedArtists = differenceBy(allArtists, taggedArtists, 'artist')
+  console.log(untaggedArtists.length)
   return untaggedArtists
 }
 
 export const saveArtists = async (artistsData) => {
-  const artistsCollection = await getArtistsCollection()
-  const result = await artistsCollection.insertMany(artistsData)
-  return result.insertedIds
+  try {
+    const artistsCollection = await getArtistsCollection()
+    const promises = []
+    artistsData.forEach(item => promises.push(artistsCollection.insertOne(item)))
+    await Promise.allSettled(promises)
+    return []
+  } catch(error) {
+    console.error(error.message)
+    return []
+  }
 }
