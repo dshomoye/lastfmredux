@@ -21,7 +21,7 @@ const Bubble = ({ username }) => {
   const timeSelect = (
     <select value={earliest} onChange={(e) => setEarliest(e.target.value)}>
       {timeRanges.map((t) => (
-        <option value={t.value}>{t.label}</option>
+        <option value={t.value} key={t.label}>{t.label}</option>
       ))}
     </select>
   );
@@ -33,7 +33,7 @@ const Bubble = ({ username }) => {
       >
         <div className="flex-1">{timeSelect}</div>
         <div className="flex-1">
-          <label for="limit">No. of songs</label>{" "}
+          <label htmlFor="limit">No. of songs</label>{" "}
           <input
             name="limit"
             type="number"

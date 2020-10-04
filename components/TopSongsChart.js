@@ -23,7 +23,7 @@ const TopSongsChart = ({ username }) => {
 
   const timeSelect = (
     <select value={earliest} onChange={(e) => setEarliest(e.target.value)}>
-      {timeRanges.map(t => (<option value={t.value} >{t.label}</option>))}
+      {timeRanges.map(t => (<option value={t.value} key={t.label} >{t.label}</option>))}
     </select>
   )
 

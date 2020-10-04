@@ -45,6 +45,7 @@ export default async (req, res) => {
         const artistGenres = await getGenresForSongs(songPlays)
         const dataroot = await getGenreTree(artistGenres, songPlays)
         res.json({data: dataroot})
+        break
       default:
           resData = { message: 'Not Supported'}
           res.status(400);

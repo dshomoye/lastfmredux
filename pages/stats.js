@@ -1,6 +1,7 @@
 import Head from "next/head";
 import Bubble from "../components/Bubble";
 import Calendar from "../components/Calendar";
+import GenreStarBurst from "../components/GenreStarBurst";
 import TopSongsChart from "../components/TopSongsChart";
 
 const VizContainer = ({ children }) => (
@@ -30,6 +31,9 @@ const Stats = () => {
           <VizContainer>
             <h3>Calendar</h3>
             <Calendar username="sonofatailor" />
+          </VizContainer>
+          <VizContainer>
+            <GenreStarBurst username="sonofatailor" />
           </VizContainer>
         </div>
       </main>

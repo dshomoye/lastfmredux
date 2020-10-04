@@ -46,12 +46,19 @@ const getEarliest = (op) => {
   return last7Days
 }
 
+const getLimit = op => {
+  if (op === 'artisttree' || op === 'genretree') {
+    return 100
+  }
+  return 10
+}
+
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 const useQuery = (op, username) => {
   const [earliest, setEarliest] = useState(getEarliest(op));
   const [latest, setLatest] = useState(today.getTime())
-  const [limit, setLimit] = useState(op === 'artisttree' ? 100 :10)
+  const [limit, setLimit] = useState(getLimit(op))
   const { data, error } = useSWR(
     getQuery(op, username, earliest, latest, limit),
     fetcher
