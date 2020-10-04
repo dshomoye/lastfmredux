@@ -88,10 +88,12 @@ export const QueryOps = {
   topsongs: "topsongs",
   artisttree: "artisttree",
   dailycount: "dailycount",
+  genretree: 'genretree'
 };
 
 export const MetadataOps = {
   untaggedartists: "untaggedartists",
   updateartists: "updateartists",
   getartistspotifyid: "getartistspotifyid",
+  setartisttimestamp: 'setartisttimestamp'
 };

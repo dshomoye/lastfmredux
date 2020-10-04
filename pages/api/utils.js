@@ -70,7 +70,7 @@ export const runMiddleware = (req, res, fn) => {
  * @param {SongPlays[]} songPlays
  * @returns {Promise<Object<string, ArtistStats>>}
  */
-export const getGenreTreeFromSongs = async (songPlays) => {
+export const getArtistTreeFromSongs = async (songPlays) => {
   const artistsNode = groupBy(songPlays, s => s.artist)
   Object.keys(artistsNode).map(artistName => {
     const artistAlbums = groupBy(artistsNode[artistName], s => s.album)
@@ -111,5 +111,39 @@ export const getGenreTreeFromSongs = async (songPlays) => {
     })
     root.children.push(artistRoot)
   })
+  return root
+}
+
+export const getGenreTree = async (artistGenres, songPlays) => {
+  const genreArtists = {}
+  artistGenres.forEach(a => {
+    a.genres?.forEach(g => {
+      if (!(g in genreArtists)) {
+        genreArtists[g] = new Set()
+      }
+      genreArtists[g].add(a.artist)
+    })
+  })
+  const artistPlays = groupBy(songPlays, 'artist')
+  const artistTree = {}
+  Object.keys(artistPlays).forEach(a => {
+    artistTree[a] = {name: a, id: a, children: artistPlays[a]}
+  })
+  const genreTree = {}
+  Object.keys(genreArtists).forEach(g => {
+    genreTree[g] = {
+      name: g,
+      id: g,
+      children: []
+    }
+    genreArtists[g].forEach(a => {
+      genreTree[g].children.push(artistTree[a])
+    })
+  })
+  const root = {
+    id: "All Genres",
+    children: Object.keys(genreTree).map(g => genreTree[g])
+  }
+  console.log(root)
   return root
 }

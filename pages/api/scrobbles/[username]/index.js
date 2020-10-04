@@ -1,6 +1,5 @@
 import Cors from "cors";
 import { getTotalPages, saveScrobblesForPage, runMiddleware } from "../../utils";
-import { createIndex } from '../../services/db'
 
 const cors = Cors({methods: ["GET", "POST"],});
 

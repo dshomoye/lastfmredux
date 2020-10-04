@@ -1,5 +1,5 @@
 import { MetadataOps } from "../../utils"
-import { getUntaggedArtists, saveArtists } from "./services/db"
+import { getUntaggedArtists, saveArtists, setArtistUpdateTimestamp } from "./services/db"
 import {getArtistId, getArtistsMetadata} from './services/spotify'
 
 export default async (req, res) => {
@@ -16,6 +16,9 @@ export default async (req, res) => {
       const result = await getArtistsMetadata(body.artistIds)
       await saveArtists(result)
       res.json({data: result})
+    } else if (query.op === MetadataOps.setartisttimestamp) {
+      await setArtistUpdateTimestamp()
+      res.json({data: {result: 'done'}})
     }
   } catch (error) {
     console.error(error)

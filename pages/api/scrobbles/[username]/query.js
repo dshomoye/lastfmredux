@@ -1,7 +1,7 @@
 import Cors from "cors";
 
-import {runMiddleware, getGenreTreeFromSongs} from '../../utils'
-import { topSongsInTime, dailyPlayCount } from '../../services/db'
+import {runMiddleware, getArtistTreeFromSongs, getGenreTree} from '../../utils'
+import { topSongsInTime, dailyPlayCount, getGenresForSongs } from '../../services/db'
 import { QueryOps } from "../../../../utils";
 
 const cors = Cors({methods: ["GET", "POST"],});
@@ -33,13 +33,18 @@ export default async (req, res) => {
         break
       case QueryOps.artisttree:
         const topSongs = await topSongsInTime(query.username, ...timeRangeFromQuery(query), query.limit);
-        const root =await getGenreTreeFromSongs(topSongs)
+        let root = await getArtistTreeFromSongs(topSongs)
         res.json({data: root})
         break
       case QueryOps.dailycount:
         const dailyCount = await dailyPlayCount(query.username, ...timeRangeFromQuery(query))
         res.json({data: dailyCount})
         break
+      case QueryOps.genretree:
+        const songPlays = await topSongsInTime(query.username, ...timeRangeFromQuery(query), query.limit);
+        const artistGenres = await getGenresForSongs(songPlays)
+        const dataroot = await getGenreTree(artistGenres, songPlays)
+        res.json({data: dataroot})
       default:
           resData = { message: 'Not Supported'}
           res.status(400);

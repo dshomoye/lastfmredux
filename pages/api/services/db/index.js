@@ -1,6 +1,6 @@
 import { MongoClient } from "mongodb";
 import { subDays, startOfYear } from "date-fns";
-import {differenceBy, differenceWith, result, sortBy} from 'lodash'
+import {differenceBy, sortBy} from 'lodash'
 
 import "../../typedef";
 import { allScrobbleArtistsPipeline, dailyPlaysCountPipeline, topSongsPipeline } from "./pipelines";
@@ -25,6 +25,11 @@ const getScrobblesCollection = async () => {
 const getArtistsCollection = async () => {
   const db = await getDb();
   return db.collection("artists")
+}
+
+const getTimestampCollection = async () => {
+  const db = await getDb()
+  return db.collection('timestamps_')
 }
 
 /**
@@ -68,7 +73,7 @@ const lastWeek = subDays(today, 7);
  * @param {Date} from 
  * @param {Date} to 
  * @param {Number} limit 
- * @returns {Promise<SongPlays[]>}
+ * @returns {Promise<SongPlays[]>} song plays array
  */
 export const topSongsInTime = async (username, from=lastWeek, to=today, limit=10) => {
   const earliest = from || lastWeek;
@@ -105,8 +110,11 @@ export const dailyPlayCount = async (username, from=yearStart, to=today) => {
 export const getUntaggedArtists = async () => {
   const scrobblesCollection = await getScrobblesCollection();
   const artistsCollection = await getArtistsCollection();
-
-  const allArtistsCursor = scrobblesCollection.aggregate(allScrobbleArtistsPipeline)
+  
+  const tCollection = await getTimestampCollection();
+  const latestCursor = await tCollection.findOne({collection: 'artists'})
+  console.log('latest cursor ', latestCursor.time)
+  const allArtistsCursor = scrobblesCollection.aggregate(allScrobbleArtistsPipeline(latestCursor.time))
   const taggedArtistsCursor = artistsCollection.find().project({ artist: 1, _id: 0});
   let allArtists = []
   let taggedArtists = []
@@ -134,4 +142,30 @@ export const saveArtists = async (artistsData) => {
     console.error(error.message)
     return []
   }
+}
+
+export const setArtistUpdateTimestamp = async () => {
+  try {
+    const tCollection = await getTimestampCollection()
+    tCollection.updateOne({collection: 'artists'}, {
+      $set: {
+        time: new Date()
+      }
+    }, {upsert: true})
+  } catch(error) {
+    console.error('Error setting timestamp', error)
+  }
+}
+
+/**
+ * 
+ * @param {SongPlays[]} songs 
+ */
+export const getGenresForSongs = async (songs) => {
+  const artistsCollection = await getArtistsCollection();
+  const artistArray = songs.map(s => s.artist);
+  const cursor = artistsCollection.find({ artist: { $in: artistArray}})
+  const result = []
+  await cursor.forEach(r => result.push(r))
+  return result
 }
