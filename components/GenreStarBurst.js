@@ -43,8 +43,8 @@ const GenreStarBurst = ({ username }) => {
         root={data.data}
         identity="name"
         value="plays"
-        innerPadding={5}
-        outerPadding={5}
+        innerPadding={8}
+        outerPadding={8}
         label="plays"
         tooltip={d => <p>{d.id}</p>}
         colors={{ scheme: 'accent' }}
