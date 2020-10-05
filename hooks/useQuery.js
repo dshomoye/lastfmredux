@@ -47,8 +47,10 @@ const getEarliest = (op) => {
 }
 
 const getLimit = op => {
-  if (op === 'artisttree' || op === 'genretree') {
+  if (op === 'artisttree' ) {
     return 100
+  } else if (op === 'genretree') {
+    return 25
   }
   return 10
 }

@@ -25,7 +25,7 @@ const Stats = () => {
             <TopSongsChart username="sonofatailor" />
           </VizContainer>
           <VizContainer>
-            <h3>Tree View</h3>
+            <h3>Artist Tree View</h3>
             <Bubble username="sonofatailor" />
           </VizContainer>
           <VizContainer>
@@ -33,6 +33,7 @@ const Stats = () => {
             <Calendar username="sonofatailor" />
           </VizContainer>
           <VizContainer>
+            <h3>Genre Tree</h3>
             <GenreStarBurst username="sonofatailor" />
           </VizContainer>
         </div>
