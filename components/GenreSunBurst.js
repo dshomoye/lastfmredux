@@ -5,7 +5,7 @@ import { useQuery } from '../hooks/useQuery'
 import styles from "./styles.module.css";
 
 
-const GenreStarBurst = ({ username }) => {
+const GenreSunBurst = ({ username }) => {
   const {data, loading, earliest, setEarliest, timeRanges, limit, setLimit} = useQuery('genretree', username);
   
   const timeSelect = (
@@ -19,7 +19,7 @@ const GenreStarBurst = ({ username }) => {
   if (loading) return <div className={styles.loader} />
   
   return (
-    <div className="h-full w-full">
+    <div className="h-full w-full" id="genresunburst">
       <div
         id="controls"
         className="flex my-2 border-solid justify-items-start mx-5"
@@ -53,4 +53,4 @@ const GenreStarBurst = ({ username }) => {
   )
 }
 
-export default GenreStarBurst;
+export default GenreSunBurst;

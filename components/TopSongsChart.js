@@ -28,7 +28,7 @@ const TopSongsChart = ({ username }) => {
   )
 
   return (
-    <div style={{ height: "100%", width: "100%" }}>
+    <div className="h-full w-full" id="topsongschart">
       <div className="my-2">
         {timeSelect}
       </div>

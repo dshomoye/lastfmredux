@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import Bubble from "../components/Bubble";
 import Calendar from "../components/Calendar";
 import Footer from "../components/Footer";
-import GenreStarBurst from "../components/GenreStarBurst";
+import GenreSunBurst from "../components/GenreSunBurst";
 import TopSongsChart from "../components/TopSongsChart";
 
 const VizContainer = ({ children }) => (
@@ -86,7 +86,7 @@ const Stats = () => {
             </VizContainer>
             <VizContainer>
               <h3>Genre Tree</h3>
-              <GenreStarBurst username={username} />
+              <GenreSunBurst username={username} />
             </VizContainer>
           </div>
         <Footer/>
