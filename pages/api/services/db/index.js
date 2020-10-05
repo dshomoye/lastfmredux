@@ -1,12 +1,23 @@
 import { MongoClient } from "mongodb";
 import { subDays, startOfYear } from "date-fns";
-import {differenceBy, sortBy} from 'lodash'
+import { differenceBy, sortBy } from "lodash";
 
 import "../../typedef";
-import { allScrobbleArtistsPipeline, dailyPlaysCountPipeline, topSongsPipeline } from "./pipelines";
+import {
+  allScrobbleArtistsPipeline,
+  dailyPlaysCountPipeline,
+  topSongsPipeline,
+} from "./pipelines";
 
 const dburi = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@lastfmredux.lwjai.gcp.mongodb.net/lastfmredux?retryWrites=true&w=majority`;
-const dbclient = new MongoClient(dburi, { useUnifiedTopology: true });
+const dbclient = new MongoClient(dburi, {
+  useUnifiedTopology: true,
+  keepAlive: false,
+  socketTimeoutMS: 3000,
+  connectTimeoutMS: 3000,
+  loggerLevel: 'warn',
+  poolSize: 3
+});
 
 const getDb = async () => {
   if (dbclient.isConnected()) {
@@ -17,6 +28,8 @@ const getDb = async () => {
   }
 };
 
+export const closeDb = async () => dbclient.close()
+
 const getScrobblesCollection = async () => {
   const db = await getDb();
   return db.collection("scrobbles");
@@ -24,13 +37,13 @@ const getScrobblesCollection = async () => {
 
 const getArtistsCollection = async () => {
   const db = await getDb();
-  return db.collection("artists")
-}
+  return db.collection("artists");
+};
 
 const getTimestampCollection = async () => {
-  const db = await getDb()
-  return db.collection('timestamps_')
-}
+  const db = await getDb();
+  return db.collection("timestamps_");
+};
 
 /**
  * @param {Array<Scrobble>} scrobbles
@@ -68,104 +81,125 @@ export const createIndex = async () => {
 const today = new Date();
 const lastWeek = subDays(today, 7);
 /**
- * 
- * @param {string} username 
- * @param {Date} from 
- * @param {Date} to 
- * @param {Number} limit 
+ *
+ * @param {string} username
+ * @param {Date} from
+ * @param {Date} to
+ * @param {Number} limit
  * @returns {Promise<SongPlays[]>} song plays array
  */
-export const topSongsInTime = async (username, from=lastWeek, to=today, limit=10) => {
+export const topSongsInTime = async (
+  username,
+  from = lastWeek,
+  to = today,
+  limit = 10
+) => {
   const earliest = from || lastWeek;
-  const latest = to || today
-  limit = limit ? parseInt(limit) : 10
+  const latest = to || today;
+  limit = limit ? parseInt(limit) : 10;
 
   const scrobblesCollection = await getScrobblesCollection();
-  const pipeline = topSongsPipeline(username, earliest, latest, limit)
+  const pipeline = topSongsPipeline(username, earliest, latest, limit);
   const cursor = scrobblesCollection.aggregate(pipeline);
   const result = [];
-  await cursor.forEach(s => result.push(s));
-  return result.map(s => ({plays: s.plays, ...s._id}));
-}
+  await cursor.forEach((s) => result.push(s));
+  return result.map((s) => ({ plays: s.plays, ...s._id }));
+};
 
-const yearStart = startOfYear(today)
+const yearStart = startOfYear(today);
 /**
- * 
- * @param {string} username 
- * @param {Date} from 
- * @param {Date} to 
+ *
+ * @param {string} username
+ * @param {Date} from
+ * @param {Date} to
  * @returns {Promise<DailyCount[]>}
  */
-export const dailyPlayCount = async (username, from=yearStart, to=today) => {
-  const earliest = from || yearStart
-  const latest = to || today
+export const dailyPlayCount = async (
+  username,
+  from = yearStart,
+  to = today
+) => {
+  const earliest = from || yearStart;
+  const latest = to || today;
   const scrobblesCollection = await getScrobblesCollection();
-  const pipeline = dailyPlaysCountPipeline(username, earliest, latest)
+  const pipeline = dailyPlaysCountPipeline(username, earliest, latest);
   const cursor = scrobblesCollection.aggregate(pipeline);
   const result = [];
-  await cursor.forEach(s => result.push(s));
-  return result.map(r => ({value:r.count, day:r._id.date}))
-}
+  await cursor.forEach((s) => result.push(s));
+  return result.map((r) => ({ value: r.count, day: r._id.date }));
+};
 
 export const getUntaggedArtists = async () => {
   const scrobblesCollection = await getScrobblesCollection();
   const artistsCollection = await getArtistsCollection();
-  
-  const tCollection = await getTimestampCollection();
-  const latestCursor = await tCollection.findOne({collection: 'artists'})
-  console.log('latest cursor ', latestCursor.time)
-  const allArtistsCursor = scrobblesCollection.aggregate(allScrobbleArtistsPipeline(latestCursor.time))
-  const taggedArtistsCursor = artistsCollection.find().project({ artist: 1, _id: 0});
-  let allArtists = []
-  let taggedArtists = []
-  const queriesPromises = [
-    allArtistsCursor.forEach(a => allArtists.push({artist: a._id.artist, song: a.song})),
-    taggedArtistsCursor.forEach(a => taggedArtists.push(a)),
-  ]
-  await Promise.all(queriesPromises)
-  allArtists = sortBy(allArtists, ['artist'])
-  taggedArtists = sortBy(taggedArtists, ['artist'])
 
-  let untaggedArtists = differenceBy(allArtists, taggedArtists, 'artist')
-  console.log(untaggedArtists.length)
-  return untaggedArtists
-}
+  const tCollection = await getTimestampCollection();
+  const latestCursor = await tCollection.findOne({ collection: "artists" });
+  console.log("latest cursor ", latestCursor.time);
+  const allArtistsCursor = scrobblesCollection.aggregate(
+    allScrobbleArtistsPipeline(latestCursor.time)
+  );
+  const taggedArtistsCursor = artistsCollection
+    .find()
+    .project({ artist: 1, _id: 0 });
+  let allArtists = [];
+  let taggedArtists = [];
+  const queriesPromises = [
+    allArtistsCursor.forEach((a) =>
+      allArtists.push({ artist: a._id.artist, song: a.song })
+    ),
+    taggedArtistsCursor.forEach((a) => taggedArtists.push(a)),
+  ];
+  await Promise.all(queriesPromises);
+  allArtists = sortBy(allArtists, ["artist"]);
+  taggedArtists = sortBy(taggedArtists, ["artist"]);
+
+  let untaggedArtists = differenceBy(allArtists, taggedArtists, "artist");
+  console.log(untaggedArtists.length);
+  return untaggedArtists;
+};
 
 export const saveArtists = async (artistsData) => {
   try {
-    const artistsCollection = await getArtistsCollection()
-    const promises = []
-    artistsData.forEach(item => promises.push(artistsCollection.insertOne(item)))
-    await Promise.allSettled(promises)
-    return []
-  } catch(error) {
-    console.error(error.message)
-    return []
+    const artistsCollection = await getArtistsCollection();
+    const promises = [];
+    artistsData.forEach((item) =>
+      promises.push(artistsCollection.insertOne(item))
+    );
+    await Promise.allSettled(promises);
+    return [];
+  } catch (error) {
+    console.error(error.message);
+    return [];
   }
-}
+};
 
 export const setArtistUpdateTimestamp = async () => {
   try {
-    const tCollection = await getTimestampCollection()
-    tCollection.updateOne({collection: 'artists'}, {
-      $set: {
-        time: new Date()
-      }
-    }, {upsert: true})
-  } catch(error) {
-    console.error('Error setting timestamp', error)
+    const tCollection = await getTimestampCollection();
+    tCollection.updateOne(
+      { collection: "artists" },
+      {
+        $set: {
+          time: new Date(),
+        },
+      },
+      { upsert: true }
+    );
+  } catch (error) {
+    console.error("Error setting timestamp", error);
   }
-}
+};
 
 /**
- * 
- * @param {SongPlays[]} songs 
+ *
+ * @param {SongPlays[]} songs
  */
 export const getGenresForSongs = async (songs) => {
   const artistsCollection = await getArtistsCollection();
-  const artistArray = songs.map(s => s.artist);
-  const cursor = artistsCollection.find({ artist: { $in: artistArray}})
-  const result = []
-  await cursor.forEach(r => result.push(r))
-  return result
-}
+  const artistArray = songs.map((s) => s.artist);
+  const cursor = artistsCollection.find({ artist: { $in: artistArray } });
+  const result = [];
+  await cursor.forEach((r) => result.push(r));
+  return result;
+};

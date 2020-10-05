@@ -1,7 +1,7 @@
 import Cors from "cors";
 
 import {runMiddleware, getArtistTreeFromSongs, getGenreTree} from '../../utils'
-import { topSongsInTime, dailyPlayCount, getGenresForSongs } from '../../services/db'
+import { topSongsInTime, dailyPlayCount, getGenresForSongs, closeDb } from '../../services/db'
 import { QueryOps } from "../../../../utils";
 
 const cors = Cors({methods: ["GET", "POST"],});
@@ -22,8 +22,7 @@ export default async (req, res) => {
   const requestStart = new Date()
   try {
     await runMiddleware(req, res, cors)
-    const { query, body } = req;
-    console.log(query)
+    const { query } = req;
     let resData
     let queryResult
     switch (query.op) {
@@ -55,7 +54,9 @@ export default async (req, res) => {
       console.error(error)
       res.status(500)
       res.send('Server Error')
+    } finally {
+      await closeDb()
     }
   const runTime = (new Date().getTime() - requestStart.getTime())
-  console.log(`${req.method}: Run Time: ${runTime}ms`)
+  console.log(`${req.method}: Run Time: ${runTime}ms. Query: ${JSON.stringify(req.query)}`)
 }

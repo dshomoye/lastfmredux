@@ -1,4 +1,5 @@
 import Cors from "cors";
+import { closeDb } from "../../services/db";
 import { getTotalPages, saveScrobblesForPage, runMiddleware } from "../../utils";
 
 const cors = Cors({methods: ["GET", "POST"],});
@@ -29,6 +30,8 @@ const handler = async (req, res) => {
     console.log(error);
     res.status(500)
     res.send("Error Occured");
+  } finally {
+    await closeDb()
   }
 };
 
