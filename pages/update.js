@@ -1,9 +1,13 @@
 import { useState } from "react";
 import Head from "next/head";
+import Link from 'next/link'
+import classsnames from "classnames";
+
+
 import styles from "../styles/Home.module.css";
 import updateStyle from "../styles/update.module.css";
 import { saveScrobbles } from "../utils";
-import classsnames from "classnames";
+import Footer from "../components/Footer";
 
 const Update = () => {
   const [username, setUsername] = useState("");
@@ -73,6 +77,9 @@ const Update = () => {
     body = (
       <div>
         <p>Scrobbles for {username} updated.</p>
+        <Link href={`/stats?username=${username}`}>
+          <a className="py-5 text-lg text-blue-700">View Stats and Viz</a>
+        </Link>
       </div>
     );
   }
@@ -86,6 +93,7 @@ const Update = () => {
       <main className={styles.main}>
         {body}
       </main>
+      <Footer />
     </div>
   );
 };

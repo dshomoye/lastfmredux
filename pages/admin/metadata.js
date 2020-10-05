@@ -1,5 +1,6 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
+import Footer from "../../components/Footer";
 import { getUntaggedArtistIds, updateArtistsMetadata } from "../../utils";
 
 const btnClass =
@@ -87,6 +88,7 @@ export default function Metadata() {
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

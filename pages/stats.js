@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 
 import Bubble from "../components/Bubble";
 import Calendar from "../components/Calendar";
+import Footer from "../components/Footer";
 import GenreStarBurst from "../components/GenreStarBurst";
 import TopSongsChart from "../components/TopSongsChart";
 
@@ -54,6 +55,7 @@ const Stats = () => {
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
           />
         </form>
+        <Footer />
       </div>
     );
   }
@@ -69,7 +71,7 @@ const Stats = () => {
           <h1 className="text-2xl text-center">
             Listening Statistics for {username}
           </h1>
-          <div className="flex flex-wrap">
+          <div className="flex flex-wrap mb-16">
             <VizContainer>
               <h3>Top 10 songs</h3>
               <TopSongsChart username={username} />
@@ -87,6 +89,7 @@ const Stats = () => {
               <GenreStarBurst username={username} />
             </VizContainer>
           </div>
+        <Footer/>
         </main>
       </div>
     );
