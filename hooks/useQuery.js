@@ -6,6 +6,7 @@ import { QueryOps } from "../utils";
 const today = new Date();
 const last7Days = subDays(today, 7).getTime();
 const last30Days = subDays(today, 30).getTime();
+const last3Months = subMonths(today, 3).getTime();
 const last6Months = subMonths(today, 6).getTime();
 const pastYear = subYears(today, 1).getTime();
 
@@ -17,6 +18,10 @@ const timeRanges = [
   {
     label: 'Last 30 days',
     value: last30Days
+  },
+  {
+    label : 'Last 3 months',
+    value: last3Months
   },
   {
     label: 'Last 6 months',

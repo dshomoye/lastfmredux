@@ -18,3 +18,12 @@ a {
 * {
   box-sizing: border-box;
 }
+
+
+div.svg-center > div > svg {
+  margin: auto;
+}
+
+.h-72 {
+  height: 24rem;
+}
