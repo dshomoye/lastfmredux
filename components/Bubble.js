@@ -47,7 +47,7 @@ const Bubble = ({ username }) => {
       </div>
       <ResponsiveBubbleHtml
           root={data.data}
-          margin={{ top: 10, right: 10, bottom: 10, left: 10 }}
+          margin={{ top: 10, right: 10, bottom: 80, left: 10 }}
           identity="name"
           enableLabel={false}
           value="plays"

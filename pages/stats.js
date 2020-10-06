@@ -12,10 +12,10 @@ import ErrorBoundary from "../components/ErrorBoundary";
 
 const VizContainer = ({ children, title }) => (
   <div
-    className="flex-initial w-full lg:w-1/2 my-8 overflow-visible"
-    style={{ height: "22rem" }}
+    className="flex-initial w-full lg:w-1/2 my-8 py-2 overflow-visible text-center shadow-inner border-solid border-t-2 border-gray-600"
+    style={{ height: "26rem" }}
   >
-    <h3>{title}</h3>
+    <h3 className="text-xl">{title}</h3>
     <ErrorBoundary fallback={<p>Error Loading.</p>}>
       <Suspense fallback={<Loading />}>{children}</Suspense>
     </ErrorBoundary>
@@ -35,8 +35,8 @@ const Stats = () => {
 
   if (!username) {
     return (
-      <div className="container">
-        <h1>Enter Username</h1>
+      <div className="container max-w-md">
+        <h1 className="text-3xl p-5">Enter Username</h1>
         <form
           className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
           onSubmit={handleSetUsername}
@@ -68,14 +68,14 @@ const Stats = () => {
 
   if (username)
     return (
-      <div>
+      <div className="container">
         <Head>
           <title>View Stats</title>
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        <main className="container">
-          <h1 className="text-2xl text-center">
-            Listening Statistics for {username}
+        <main>
+          <h1 className="text-2xl text-center pt-5">
+            Scrobble Patterns for {username}
           </h1>
           <div className="flex flex-wrap mb-16">
             <VizContainer title="Top 10 Tracks">

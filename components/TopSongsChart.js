@@ -40,7 +40,7 @@ const TopSongsChart = ({ username }) => {
           colors={{ scheme: "category10" }}
           sortByValue={true}
           margin={{
-            bottom: 40,
+            bottom: 80,
             top: 40,
           }}
           padAngle={2}
