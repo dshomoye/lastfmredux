@@ -1,7 +1,6 @@
 import { ResponsivePie } from "@nivo/pie";
 
 import { useQuery } from "../hooks/useQuery";
-import Loading from "./Loading";
 
 const getPieDataFromJson = (jsonData) => {
   return jsonData.map((playdata) => ({
@@ -12,9 +11,10 @@ const getPieDataFromJson = (jsonData) => {
 };
 
 const TopSongsChart = ({ username }) => {
-  const { data, loading, earliest, setEarliest, timeRanges } = useQuery(
+  const { data, earliest, setEarliest, timeRanges } = useQuery(
     "topsongs",
-    username
+    username,
+    true,
   );
 
   return (
@@ -33,10 +33,7 @@ const TopSongsChart = ({ username }) => {
           </select>
         }
       </div>
-      {loading ? (
-        <Loading />
-      ) : (
-        <ResponsivePie
+      <ResponsivePie
           data={getPieDataFromJson(data.data)}
           innerRadius={0.5}
           cornerRadius={5}
@@ -57,7 +54,6 @@ const TopSongsChart = ({ username }) => {
             </div>
           )}
         />
-      )}
     </div>
   );
 };

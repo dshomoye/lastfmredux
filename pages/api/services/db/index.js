@@ -12,11 +12,11 @@ import {
 const dburi = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@lastfmredux.lwjai.gcp.mongodb.net/lastfmredux?retryWrites=true&w=majority`;
 const dbclient = new MongoClient(dburi, {
   useUnifiedTopology: true,
-  keepAlive: false,
-  socketTimeoutMS: 3000,
-  connectTimeoutMS: 3000,
   loggerLevel: 'warn',
-  poolSize: 3
+  poolSize: 1,
+  keepAlive: false,
+  connectTimeoutMS: 1000,
+  socketTimeoutMS: 1000,
 });
 
 const getDb = async () => {
@@ -28,7 +28,10 @@ const getDb = async () => {
   }
 };
 
-export const closeDb = async () => dbclient.close()
+export const closeDb = async () => {
+  await dbclient.close()
+  await dbclient.logout()
+}
 
 const getScrobblesCollection = async () => {
   const db = await getDb();

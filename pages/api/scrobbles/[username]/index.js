@@ -24,7 +24,7 @@ const handler = async (req, res) => {
       }
     }
     const runTime = (new Date().getTime() - requestStart.getTime())/1000
-    console.log(`${req.method}: Run Time: ${runTime}s`)
+    console.log(`---\n${req.method}: Run Time: ${runTime}s\n---`)
     res.send(resData);
   } catch (error) {
     console.log(error);

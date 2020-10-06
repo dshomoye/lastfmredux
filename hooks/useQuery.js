@@ -62,13 +62,16 @@ const getLimit = op => {
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
-const useQuery = (op, username) => {
+const useQuery = (op, username, suspense=false) => {
   const [earliest, setEarliest] = useState(getEarliest(op));
   const [latest, setLatest] = useState(today.getTime())
   const [limit, setLimit] = useState(getLimit(op))
   const { data, error } = useSWR(
     getQuery(op, username, earliest, latest, limit),
-    fetcher
+    fetcher,
+    {
+      suspense: suspense
+    }
   );
 
   return {

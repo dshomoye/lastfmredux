@@ -1,8 +1,6 @@
 import { ResponsiveBubbleHtml } from "@nivo/circle-packing";
 import { useQuery } from "../hooks/useQuery";
 
-import Loading from "./Loading";
-
 const Bubble = ({ username }) => {
   const {
     data,
@@ -12,7 +10,7 @@ const Bubble = ({ username }) => {
     timeRanges,
     limit,
     setLimit,
-  } = useQuery("artisttree", username);
+  } = useQuery("artisttree", username, true);
 
   return (
     <div className="h-full w-full">
@@ -47,10 +45,7 @@ const Bubble = ({ username }) => {
           />
         </div>
       </div>
-      {loading ? (
-        <Loading />
-      ) : (
-        <ResponsiveBubbleHtml
+      <ResponsiveBubbleHtml
           root={data.data}
           margin={{ top: 10, right: 10, bottom: 10, left: 10 }}
           identity="name"
@@ -63,7 +58,6 @@ const Bubble = ({ username }) => {
           motionStiffness={90}
           motionDamping={12}
         />
-      )}
     </div>
   );
 };

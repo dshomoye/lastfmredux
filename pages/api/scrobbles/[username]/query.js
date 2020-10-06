@@ -58,5 +58,5 @@ export default async (req, res) => {
       await closeDb()
     }
   const runTime = (new Date().getTime() - requestStart.getTime())
-  console.log(`${req.method}: Run Time: ${runTime}ms. Query: ${JSON.stringify(req.query)}`)
+  console.log(`---\n${req.method}: Run Time: ${runTime}ms. Query: ${JSON.stringify(req.query)}\n---`)
 }

@@ -1,18 +1,24 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { Suspense } from "react";
 
 import Bubble from "../components/Bubble";
 import Calendar from "../components/Calendar";
 import Footer from "../components/Footer";
 import GenreSunBurst from "../components/GenreSunBurst";
 import TopSongsChart from "../components/TopSongsChart";
+import Loading from "../components/Loading";
+import ErrorBoundary from "../components/ErrorBoundary";
 
-const VizContainer = ({ children }) => (
+const VizContainer = ({ children, title }) => (
   <div
     className="flex-initial w-full lg:w-1/2 my-8 overflow-visible"
     style={{ height: "22rem" }}
   >
-    {children}
+    <h3>{title}</h3>
+    <ErrorBoundary fallback={<p>Error Loading.</p>}>
+      <Suspense fallback={<Loading />}>{children}</Suspense>
+    </ErrorBoundary>
   </div>
 );
 
@@ -72,24 +78,20 @@ const Stats = () => {
             Listening Statistics for {username}
           </h1>
           <div className="flex flex-wrap mb-16">
-            <VizContainer>
-              <h3>Top 10 songs</h3>
+            <VizContainer title="Top 10 Tracks">
               <TopSongsChart username={username} />
             </VizContainer>
-            <VizContainer>
-              <h3>Artist Tree View</h3>
+            <VizContainer title="Artists Stats">
               <Bubble username={username} />
             </VizContainer>
-            <VizContainer>
-              <h3>Calendar</h3>
+            <VizContainer title="Listening Calendar">
               <Calendar username={username} />
             </VizContainer>
-            <VizContainer>
-              <h3>Genre Tree</h3>
+            <VizContainer title="Genre Stats">
               <GenreSunBurst username={username} />
             </VizContainer>
           </div>
-        <Footer/>
+          <Footer />
         </main>
       </div>
     );
