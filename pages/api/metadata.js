@@ -1,6 +1,6 @@
 import { MetadataOps } from "../../utils"
-import { getUntaggedArtists, saveArtists, setArtistUpdateTimestamp } from "./services/db"
-import {getArtistId, getArtistsMetadata} from './services/spotify'
+import { getUntaggedArtists, saveArtists, setArtistUpdateTimestamp } from "../../services/db"
+import {getArtistId, getArtistsMetadata} from '../../services/spotify'
 
 export default async (req, res) => {
   const requestStart = new Date()

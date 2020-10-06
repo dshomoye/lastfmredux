@@ -1,11 +1,9 @@
 import { mergeAll, map, catchError, mergeMap, delay, concatMap } from "rxjs/operators";
-import { asyncScheduler, from, of, scheduled } from "rxjs";
+import { from, of } from "rxjs";
 import { fromFetch } from "rxjs/fetch";
 import { chunk } from 'lodash'
 
-import "../pages/api/typedef";
-
-const getRandomInt = max => Math.floor(Math.random() * Math.floor(max))
+import "./typedef";
 
 export function saveScrobbles(username, totalPages, fromTime) {
   let currentPage = totalPages;
@@ -64,7 +62,6 @@ export function getUntaggedArtistIds() {
  */
 export const updateArtistsMetadata = artistIds => {
   const slices = chunk(artistIds, 49)
-  console.log('slices ', slices)
   return from(slices).pipe(
     concatMap(artistSlice => of(artistSlice).pipe(
       delay(10),

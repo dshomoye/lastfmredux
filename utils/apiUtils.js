@@ -1,7 +1,7 @@
 import { groupBy } from "lodash";
 
 export const LFApiURl = "http://ws.audioscrobbler.com/2.0/";
-import { getUserLastScrobble, saveScrobbles } from "./services/db";
+import { getUserLastScrobble, saveScrobbles } from "../services/db";
 import "./typedef";
 
 /**

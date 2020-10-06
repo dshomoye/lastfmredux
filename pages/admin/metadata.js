@@ -76,12 +76,12 @@ const UpdateArtists = () => {
 
 export default function Metadata() {
   return (
-    <div>
+    <div className="container max-w-md p-10 text-center justify-items-center">
       <Head>
         <title>Update Metadata</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="container">
+      <main>
         <div className="flex flex-wrap">
           <div className="w-1/2 p-5">
             <UpdateArtists />

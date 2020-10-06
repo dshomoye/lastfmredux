@@ -2,7 +2,7 @@ import { MongoClient } from "mongodb";
 import { subDays, startOfYear } from "date-fns";
 import { differenceBy, sortBy } from "lodash";
 
-import "../../typedef";
+import "../../utils/typedef";
 import {
   allScrobbleArtistsPipeline,
   dailyPlaysCountPipeline,
@@ -138,7 +138,6 @@ export const getUntaggedArtists = async () => {
 
   const tCollection = await getTimestampCollection();
   const latestCursor = await tCollection.findOne({ collection: "artists" });
-  console.log("latest cursor ", latestCursor.time);
   const allArtistsCursor = scrobblesCollection.aggregate(
     allScrobbleArtistsPipeline(latestCursor.time)
   );
@@ -158,7 +157,6 @@ export const getUntaggedArtists = async () => {
   taggedArtists = sortBy(taggedArtists, ["artist"]);
 
   let untaggedArtists = differenceBy(allArtists, taggedArtists, "artist");
-  console.log(untaggedArtists.length);
   return untaggedArtists;
 };
 
