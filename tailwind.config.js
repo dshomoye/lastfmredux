@@ -3,13 +3,15 @@ module.exports = {
     removeDeprecatedGapUtilities: true,
     purgeLayersByDefault: true,
   },
-  purge: [],
+  purge: false,
   theme: {
     extend: {},
     container: {
       center: true,
     },
   },
-  variants: {},
+  variants: {
+    fontSize: ['responsive', 'hover', 'focus'],
+  },
   plugins: [],
 }

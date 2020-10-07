@@ -18,16 +18,16 @@ const navs = [
 
 const Header = ({ page }) => (
   <div className="fixed z-10">
-    <ul className="flex justify-center py-5 shadow-lg w-screen bg-white">
+    <ul className="flex justify-center py-6 shadow-lg w-screen bg-white">
       {navs.map((n) => (
         <Fragment key={n.href}>
           {n.label === page ? (
-            <li className="text-gray-900 mx-12 text-lg" key={n.href}>
+            <li className="text-gray-900 px-5 text-md font-bold lg:px-10 border-t-4 border-gray-800" key={n.href}>
               <a>{n.label}</a>
             </li>
           ) : (
             <li
-              className="text-blue-600 hover:text-gray-800 mr-6 text-md font-bold border-gray-700 mx-8"
+              className="text-blue-600 hover:text-gray-800 text-md font-bold px-3 lg:px-8 border-t-2 border-gray-700"
               key={n.href}
             >
               <Link href={n.href}><a>{n.label}</a></Link>

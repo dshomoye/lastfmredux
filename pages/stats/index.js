@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
+import useSWR from "swr";
 
 import PageContainer from "../../components/PageContainer";
 import StyledSelect from "../../components/StyledSelect";
@@ -44,7 +45,7 @@ const Stats = () => {
       </div>
         <input
           type="submit"
-          className="bg-transparent hover:bg-gray-800 text-black hover:text-white border border-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline shadow-lg"
+          className="bg-transparent cursor-pointer hover:bg-gray-800 text-black hover:text-white border border-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline shadow-lg"
         />
       </form>
     </div>

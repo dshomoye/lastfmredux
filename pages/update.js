@@ -61,7 +61,7 @@ const Update = () => {
           type="text"
         />
         <input
-          className="bg-transparent hover:bg-gray-800 text-black hover:text-white border border-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          className="bg-transparent cursor-pointer hover:bg-gray-800 text-black hover:text-white border border-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline shadow-md"
           type="submit"
           disabled={inProgress}
         />
@@ -92,7 +92,7 @@ const Update = () => {
   return (
     <PageContainer page="UPDATE">
       <Head>
-        <title>Update Scrobbles</title>
+        <title>LastFM Redux: Update Scrobbles</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="text-center">{body}</main>
