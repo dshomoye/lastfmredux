@@ -1,5 +1,5 @@
 import Footer from "./Footer";
-import Header from "./header";
+import Header from "./Header";
 
 const PageContainer = ({ children, page }) => (
   <div className="w-screen">
