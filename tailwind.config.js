@@ -3,12 +3,7 @@ module.exports = {
     removeDeprecatedGapUtilities: true,
     purgeLayersByDefault: true,
   },
-  purge: [
-    './pages/**/*.js',
-    './.next/**/*.js',
-    './.next/**/*.html',
-    './.next/**/*.css'
-  ],
+  purge: [],
   theme: {
     extend: {},
     container: {

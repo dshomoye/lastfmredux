@@ -21,7 +21,6 @@ export default async (req, res) => {
       res.json({data: {result: 'done'}})
     } else if (query.op === MetadataOps.allusernames) {
       const usernames = await getAllUsers()
-      console.log(usernames)
       res.json({data: {usernames}})
     }
   } catch (error) {
