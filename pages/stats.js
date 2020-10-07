@@ -9,6 +9,7 @@ import GenreSunBurst from "../components/GenreSunBurst";
 import TopSongsChart from "../components/TopSongsChart";
 import Loading from "../components/Loading";
 import ErrorBoundary from "../components/ErrorBoundary";
+import PageContainer from "../components/PageContainer";
 
 const VizContainer = ({ children, title }) => (
   <div
@@ -33,68 +34,68 @@ const Stats = () => {
     });
   };
 
-  if (!username) {
-    return (
-      <div className="container max-w-md">
-        <h1 className="text-3xl p-5">Enter Username</h1>
-        <form
-          className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
-          onSubmit={handleSetUsername}
+  console.log("username ", username);
+
+  let body = (
+    <>
+      <h1 className="text-2xl text-center">Enter Username</h1>
+      <form
+        className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 max-w-md m-auto text-center"
+        onSubmit={handleSetUsername}
+      >
+        <label
+          className="block text-gray-700 text-sm font-bold mb-2"
+          htmlFor="username"
         >
-          <div className="mb-4">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="username"
-            >
-              Username
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="username"
-              type="text"
-              placeholder="Username"
-              name="username"
-            />
-          </div>
-          <input
-            type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          />
-        </form>
-        <Footer />
-      </div>
+          Username
+        </label>
+        <input
+          className="shadow appearance-none border rounded w-full py-2 px-3 mb-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          id="username"
+          type="text"
+          placeholder="Username"
+          name="username"
+        />
+        <input
+          type="submit"
+          className="bg-transparent hover:bg-gray-800 text-black hover:text-white border border-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        />
+      </form>
+    </>
+  );
+
+  if (username) {
+    body = (
+      <main>
+        <h1 className="text-2xl text-center">
+          Scrobble Patterns for {username}
+        </h1>
+        <div className="flex flex-wrap mb-16">
+          <VizContainer title="Top 10 Tracks">
+            <TopSongsChart username={username} />
+          </VizContainer>
+          <VizContainer title="Artists Stats">
+            <Bubble username={username} />
+          </VizContainer>
+          <VizContainer title="Listening Calendar">
+            <Calendar username={username} />
+          </VizContainer>
+          <VizContainer title="Genre Stats">
+            <GenreSunBurst username={username} />
+          </VizContainer>
+        </div>
+      </main>
     );
   }
-
-  if (username)
-    return (
-      <div className="container">
-        <Head>
-          <title>View Stats</title>
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
-        <main>
-          <h1 className="text-2xl text-center pt-5">
-            Scrobble Patterns for {username}
-          </h1>
-          <div className="flex flex-wrap mb-16">
-            <VizContainer title="Top 10 Tracks">
-              <TopSongsChart username={username} />
-            </VizContainer>
-            <VizContainer title="Artists Stats">
-              <Bubble username={username} />
-            </VizContainer>
-            <VizContainer title="Listening Calendar">
-              <Calendar username={username} />
-            </VizContainer>
-            <VizContainer title="Genre Stats">
-              <GenreSunBurst username={username} />
-            </VizContainer>
-          </div>
-          <Footer />
-        </main>
-      </div>
-    );
+  return (
+    <PageContainer page="VIEW">
+      <Head>
+        <title>View Patterns</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      {body}
+    </PageContainer>
+  );
 };
 
 export default Stats;

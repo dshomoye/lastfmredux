@@ -1,13 +1,13 @@
 import { useState } from "react";
 import Head from "next/head";
-import Link from 'next/link'
+import Link from "next/link";
 import classsnames from "classnames";
-
 
 import styles from "../styles/Home.module.css";
 import updateStyle from "../styles/update.module.css";
 import { saveScrobbles } from "../utils";
 import Footer from "../components/Footer";
+import PageContainer from '../components/PageContainer'
 
 const Update = () => {
   const [username, setUsername] = useState("");
@@ -38,7 +38,7 @@ const Update = () => {
         setDownloading(false);
         setInProgress(false);
         setCompletedPages(0);
-        setIsUpdated(true)
+        setIsUpdated(true);
         setNumOfPages(0);
       },
     });
@@ -52,15 +52,31 @@ const Update = () => {
   });
   let body = (
     <>
-      <h1 className={styles.updateTitle}>
-        Enter lastfm account name and click submit
-      </h1>
-      <div>
-        <form onSubmit={handleSubmit}>
-          <input className={updateStyle.text} onChange={handleUserChange} />
-          <input type="submit" className={submitClass} disabled={inProgress} />
-        </form>
-      </div>
+      <h1 className="text-lg">Enter lastfm account name and click submit</h1>
+      <form
+        className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 max-w-md m-auto"
+        onSubmit={handleSubmit}
+      >
+        <label
+          className="block text-gray-700 text-sm font-bold mb-2"
+          htmlFor="username"
+        >
+          Username
+        </label>
+        <input
+          className="shadow appearance-none border rounded w-full py-2 px-3 mb-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          onChange={handleUserChange}
+          id="username"
+          name="username"
+          placeholder="Last FM username"
+          type="text"
+        />
+        <input
+          className="bg-transparent hover:bg-gray-800 text-black hover:text-white border border-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          type="submit"
+          disabled={inProgress}
+        />
+      </form>
     </>
   );
   if (downloading) {
@@ -85,16 +101,13 @@ const Update = () => {
   }
 
   return (
-    <div>
+    <PageContainer page="UPDATE">
       <Head>
         <title>Update Scrobbles</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={styles.main}>
-        {body}
-      </main>
-      <Footer />
-    </div>
+      <main className="text-center">{body}</main>
+    </PageContainer>
   );
 };
 

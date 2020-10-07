@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import React from 'react'
 import styles from '../styles/Home.module.css'
 
@@ -11,9 +10,6 @@ const Footer = () => (      <footer className={styles.footer}>
     Powered by{' '}
     <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
   </a>
-  <Link href="/">
-    <a className="m-5 text-blue-600 underline">Go Home</a>
-  </Link>
 </footer>)
 
 export default Footer
