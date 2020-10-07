@@ -1,12 +1,7 @@
 import { useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
-import classsnames from "classnames";
-
-import styles from "../styles/Home.module.css";
-import updateStyle from "../styles/update.module.css";
 import { saveScrobbles } from "../utils";
-import Footer from "../components/Footer";
 import PageContainer from '../components/PageContainer'
 
 const Update = () => {
@@ -44,28 +39,22 @@ const Update = () => {
     });
   };
 
-  const handleUserChange = (e) => setUsername(e.target.value);
-
-  const submitClass = classsnames({
-    [updateStyle.submit]: true,
-    [updateStyle.disabledSubmit]: inProgress,
-  });
   let body = (
     <>
-      <h1 className="text-lg">Enter lastfm account name and click submit</h1>
       <form
         className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 max-w-md m-auto"
         onSubmit={handleSubmit}
       >
+        <h1 className="text-xl my-2">Ingest Scrobbles</h1>
         <label
           className="block text-gray-700 text-sm font-bold mb-2"
           htmlFor="username"
         >
-          Username
+          Enter LastFM username
         </label>
         <input
           className="shadow appearance-none border rounded w-full py-2 px-3 mb-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          onChange={handleUserChange}
+          onChange={e => setUsername(e.target.value)}
           id="username"
           name="username"
           placeholder="Last FM username"
@@ -94,7 +83,7 @@ const Update = () => {
       <div>
         <p>Scrobbles for {username} updated.</p>
         <Link href={`/stats?username=${username}`}>
-          <a className="py-5 text-lg text-blue-700">View Stats and Viz</a>
+          <a className="py-5 text-md my-10 text-blue-700">View Stats and Viz 📊</a>
         </Link>
       </div>
     );

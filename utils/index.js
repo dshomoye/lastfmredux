@@ -92,7 +92,8 @@ export const MetadataOps = {
   untaggedartists: "untaggedartists",
   updateartists: "updateartists",
   getartistspotifyid: "getartistspotifyid",
-  setartisttimestamp: 'setartisttimestamp'
+  setartisttimestamp: 'setartisttimestamp',
+  allusernames: 'allusernames'
 };
 
 export const stringToColor = function(str) {

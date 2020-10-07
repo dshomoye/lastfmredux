@@ -58,5 +58,5 @@ export default async (req, res) => {
       console.log('DONE')
     }
   const runTime = (new Date().getTime() - requestStart.getTime())
-  console.log(`---\n${req.method}: Run Time: ${runTime}ms. Query: ${JSON.stringify(req.query)}\n---`)
+  console.log(`Run Time: ${runTime}ms.`)
 }

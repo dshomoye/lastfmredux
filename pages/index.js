@@ -1,7 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
 
-import Footer from "../components/Footer";
 import PageContainer from "../components/PageContainer";
 import styles from "../styles/Home.module.css";
 

@@ -5,6 +5,7 @@ import { differenceBy, sortBy } from "lodash";
 import "../../utils/typedef";
 import {
   allScrobbleArtistsPipeline,
+  allUsernames,
   dailyPlaysCountPipeline,
   topSongsPipeline,
 } from "./pipelines";
@@ -204,3 +205,14 @@ export const getGenresForSongs = async (songs) => {
   await cursor.forEach((r) => result.push(r));
   return result;
 };
+
+/**
+ * @returns {Promise<String[]>} array of usernames
+ */
+export const getAllUsers = async () => {
+  const scrobblesCollection = await getScrobblesCollection();
+  const cursor = scrobblesCollection.aggregate(allUsernames);
+  let usernames = []
+  await cursor.forEach(u => usernames.push(u._id));
+  return usernames
+}

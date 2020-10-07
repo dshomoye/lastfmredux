@@ -22,15 +22,15 @@ const Header = ({ page }) => (
       {navs.map((n) => (
         <Fragment key={n.href}>
           {n.label === page ? (
-            <li className="text-gray-900 mx-3" key={n.href}>
+            <li className="text-gray-900 mx-12 text-lg" key={n.href}>
               <a>{n.label}</a>
             </li>
           ) : (
             <li
-              className="text-blue-600 hover:text-gray-800 mr-6 text-md font-bold border-gray-700 mx-3"
+              className="text-blue-600 hover:text-gray-800 mr-6 text-md font-bold border-gray-700 mx-8"
               key={n.href}
             >
-              <Link href={n.href}>{n.label}</Link>
+              <Link href={n.href}><a>{n.label}</a></Link>
             </li>
           )}
         </Fragment>

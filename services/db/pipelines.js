@@ -85,3 +85,11 @@ export const allScrobbleArtistsPipeline = (latest) => [
     },
   },
 ];
+
+export const allUsernames = [
+  {
+    $group: {
+      _id: '$username'
+    }
+  }
+]

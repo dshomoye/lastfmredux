@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import Footer from "../../components/Footer";
+import PageContainer from "../../components/PageContainer";
 import { getUntaggedArtistIds, updateArtistsMetadata } from "../../utils";
 
 const btnClass =
@@ -76,19 +77,18 @@ const UpdateArtists = () => {
 
 export default function Metadata() {
   return (
-    <div className="container max-w-md p-10 text-center justify-items-center">
+    <PageContainer>
       <Head>
         <title>Update Metadata</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <div className="flex flex-wrap">
+        <div className="flex flex-wrap text-center">
           <div className="w-1/2 p-5">
             <UpdateArtists />
           </div>
         </div>
       </main>
-      <Footer />
-    </div>
+    </PageContainer>
   );
 }

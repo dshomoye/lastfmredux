@@ -1,5 +1,5 @@
 import { MetadataOps } from "../../utils"
-import { getUntaggedArtists, saveArtists, setArtistUpdateTimestamp } from "../../services/db"
+import { getAllUsers, getUntaggedArtists, saveArtists, setArtistUpdateTimestamp } from "../../services/db"
 import {getArtistId, getArtistsMetadata} from '../../services/spotify'
 
 export default async (req, res) => {
@@ -19,6 +19,10 @@ export default async (req, res) => {
     } else if (query.op === MetadataOps.setartisttimestamp) {
       await setArtistUpdateTimestamp()
       res.json({data: {result: 'done'}})
+    } else if (query.op === MetadataOps.allusernames) {
+      const usernames = await getAllUsers()
+      console.log(usernames)
+      res.json({data: {usernames}})
     }
   } catch (error) {
     console.error(error)
@@ -26,5 +30,5 @@ export default async (req, res) => {
     res.end("Error Occured")
   }
   const runTime = (new Date().getTime() - requestStart.getTime())
-  console.log(`${req.method}: Run Time: ${runTime}ms`)
+  console.log(`Run Time: ${runTime}ms`)
 }
