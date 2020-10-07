@@ -4,7 +4,10 @@ module.exports = {
     purgeLayersByDefault: true,
   },
   purge: [
-    './pages/**/*.js'
+    './pages/**/*.js',
+    './.next/**/*.js',
+    './.next/**/*.html',
+    './.next/**/*.css'
   ],
   theme: {
     extend: {},
