@@ -82,7 +82,7 @@ const Update = () => {
     body = (
       <div>
         <p>Scrobbles for {username} updated.</p>
-        <Link href={`/stats?username=${username}`}>
+        <Link href={`/stats/${username}`}>
           <a className="py-5 text-md my-10 text-blue-700">View Stats and Viz 📊</a>
         </Link>
       </div>

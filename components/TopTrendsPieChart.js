@@ -74,7 +74,7 @@ const chartModes = [
   },
 ];
 
-const TopSongsChart = ({ username }) => {
+const TopTrendsPieChart = ({ username }) => {
   const { data, earliest, setEarliest, timeRanges, setOp, op } = useQuery(
     QueryOps.topsongs,
     username,
@@ -118,4 +118,4 @@ const TopSongsChart = ({ username }) => {
   );
 };
 
-export default TopSongsChart;
+export default TopTrendsPieChart;

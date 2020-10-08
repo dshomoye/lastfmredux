@@ -7,7 +7,7 @@ import ErrorBoundary from "../../components/ErrorBoundary";
 import GenreSunBurst from "../../components/GenreSunBurst";
 import Loading from "../../components/Loading";
 import PageContainer from "../../components/PageContainer";
-import TopSongsChart from "../../components/TopSongsChart";
+import TopTrendsPieChart from "../../components/TopTrendsPieChart";
 import Bubble from '../../components/Bubble'
 
 const VizContainer = ({ children, title }) => (
@@ -40,7 +40,7 @@ const UserStats = () => {
             </h1>
             <div className="flex flex-wrap mb-16">
               <VizContainer title="Trends: Top 10">
-                <TopSongsChart username={username} />
+                <TopTrendsPieChart username={username} />
               </VizContainer>
               <VizContainer title="Artists Stats">
                 <Bubble username={username} />
