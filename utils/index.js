@@ -83,6 +83,8 @@ export const updateArtistsMetadata = artistIds => {
 
 export const QueryOps = {
   topsongs: "topsongs",
+  topartists: 'topartists',
+  topgenres: 'topgenres',
   artisttree: "artisttree",
   dailycount: "dailycount",
   genretree: 'genretree'

@@ -62,7 +62,8 @@ const getLimit = op => {
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
-const useQuery = (op, username, suspense=false) => {
+const useQuery = (operation, username, suspense=false) => {
+  const [op, setOp] = useState(operation)
   const [earliest, setEarliest] = useState(getEarliest(op));
   const [latest, setLatest] = useState(today.getTime())
   const [limit, setLimit] = useState(getLimit(op))
@@ -85,6 +86,8 @@ const useQuery = (op, username, suspense=false) => {
     setLimit: v => {if (v > 0) setLimit(v)},
     latest, 
     setLatest,
+    setOp,
+    op
   }
 };
 

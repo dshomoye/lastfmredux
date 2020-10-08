@@ -7,6 +7,8 @@ import {
   allScrobbleArtistsPipeline,
   allUsernames,
   dailyPlaysCountPipeline,
+  topArtistsPipeline,
+  topGenresPipeline,
   topSongsPipeline,
 } from "./pipelines";
 
@@ -215,4 +217,38 @@ export const getAllUsers = async () => {
   let usernames = []
   await cursor.forEach(u => usernames.push(u._id));
   return usernames
+}
+
+export const topArtistsInTime = async (
+  username,
+  from = lastWeek,
+  to = today,
+  limit = 10
+) => {
+  const scrobblesCollection = await getScrobblesCollection();
+  const earliest = from || lastWeek;
+  const latest = to || today;
+  limit = limit ? parseInt(limit) : 10;
+  const pipeline = topArtistsPipeline(username, earliest, latest, limit);
+  const cursor = scrobblesCollection.aggregate(pipeline);
+  const result = []
+  await cursor.forEach((s) => result.push({artist: s._id.artist, plays: s.plays}));
+  return result
+}
+
+export const topGenresInTime = async (
+  username,
+  from = lastWeek,
+  to = today,
+  limit = 10
+) => {
+  const scrobblesCollection = await getScrobblesCollection();
+  const earliest = from || lastWeek;
+  const latest = to || today;
+  limit = limit ? parseInt(limit) : 10;
+  const pipeline = topGenresPipeline(username, earliest, latest, limit);
+  const cursor = scrobblesCollection.aggregate(pipeline);
+  const result = []
+  await cursor.forEach(g => result.push({ genre: g._id, plays: g.plays}))
+  return result
 }

@@ -39,7 +39,7 @@ const UserStats = () => {
               Scrobble Patterns for {username}
             </h1>
             <div className="flex flex-wrap mb-16">
-              <VizContainer title="Top 10 Tracks">
+              <VizContainer title="Trends: Top 10">
                 <TopSongsChart username={username} />
               </VizContainer>
               <VizContainer title="Artists Stats">
