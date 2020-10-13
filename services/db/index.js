@@ -23,14 +23,19 @@ const dbclient = new MongoClient(dburi, {
 });
 
 const getDb = async () => {
-  if (dbclient.isConnected()) {
-    console.log('db is connected')
-    return dbclient.db();
-  } else {
-    console.log('db is not connected')
-    await dbclient.connect();
-    console.log('got db')
-    return dbclient.db();
+  try {
+    if (dbclient.isConnected()) {
+      console.log('db is connected')
+      return dbclient.db();
+    } else {
+      console.log('db is not connected')
+      await dbclient.connect();
+      console.log('got db')
+      return dbclient.db();
+    }
+  } catch (err) {
+    console.error("Failed to get db ", err)
+    throw err
   }
 };
 
