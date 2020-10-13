@@ -24,9 +24,12 @@ const dbclient = new MongoClient(dburi, {
 
 const getDb = async () => {
   if (dbclient.isConnected()) {
+    console.log('db is connected')
     return dbclient.db();
   } else {
+    console.log('db is not connected')
     await dbclient.connect();
+    console.log('got db')
     return dbclient.db();
   }
 };
@@ -38,6 +41,7 @@ export const closeDb = async () => {
 
 const getScrobblesCollection = async () => {
   const db = await getDb();
+  console.log('got db')
   return db.collection("scrobbles");
 };
 
