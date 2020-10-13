@@ -212,7 +212,9 @@ export const getGenresForSongs = async (songs) => {
  * @returns {Promise<String[]>} array of usernames
  */
 export const getAllUsers = async () => {
+  console.log('getting collection')
   const scrobblesCollection = await getScrobblesCollection();
+  console.log('running query')
   const cursor = scrobblesCollection.aggregate(allUsernames);
   let usernames = []
   console.log('Retrieving usernames from results')
