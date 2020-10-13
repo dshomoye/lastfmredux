@@ -20,7 +20,9 @@ export default async (req, res) => {
       await setArtistUpdateTimestamp()
       res.json({data: {result: 'done'}})
     } else if (query.op === MetadataOps.allusernames) {
+      console.log('Getting all usernames.')
       const usernames = await getAllUsers()
+      console.log('usernames returned. Returning result.')
       res.json({data: {usernames}})
     }
   } catch (error) {

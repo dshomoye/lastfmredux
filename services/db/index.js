@@ -215,6 +215,7 @@ export const getAllUsers = async () => {
   const scrobblesCollection = await getScrobblesCollection();
   const cursor = scrobblesCollection.aggregate(allUsernames);
   let usernames = []
+  console.log('Retrieving usernames from results')
   await cursor.forEach(u => usernames.push(u._id));
   return usernames
 }
