@@ -112,6 +112,14 @@ const Update = () => {
             <p className="text-xs">
               Valid lastfm usernames will be manually ingested.
             </p>
+            <a
+              href="https://www.last.fm/about/trackmymusic"
+              className="text-xs text-green-400 underline"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Track your music with LastFM
+            </a>
           </form>
         </div>
         <div className={formStyle}>

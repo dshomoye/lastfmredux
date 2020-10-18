@@ -4,7 +4,7 @@ import Header from "./Header";
 const PageContainer = ({ children, page }) => (
   <div className="w-screen">
     <Header page={page} />
-    <div className="containe pt-24 mb-5" style={{minHeight: "90vh"}}>{children}</div>
+    <div className="containe pt-24 mb-5" style={{minHeight: "85vh"}}>{children}</div>
     <Footer />
   </div>
 );
