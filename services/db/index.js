@@ -51,6 +51,11 @@ const getTimestampCollection = async () => {
   return db.collection("timestamps_");
 };
 
+const getUserQueCollection = async () => {
+  const db = await getDb();
+  return db.collection("newuserque")
+}
+
 /**
  * @param {Array<Scrobble>} scrobbles
  * @returns {Promise<string>} the id of the added scrobble
@@ -251,4 +256,20 @@ export const topGenresInTime = async (
   const result = []
   await cursor.forEach(g => result.push({ genre: g._id, plays: g.plays}))
   return result
+}
+
+export const getUsersInQueue = async () => {
+  const collection = await getUserQueCollection();
+  const cursor = collection.find()
+  const result = []
+  await cursor.forEach( u => result.push(u.username))
+  return result
+}
+
+export const addUserToQueue = async username => {
+  const collection = await getUserQueCollection();
+  await collection.insertOne({
+    username
+  })
+  return true
 }

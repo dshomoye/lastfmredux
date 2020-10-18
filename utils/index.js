@@ -95,7 +95,9 @@ export const MetadataOps = {
   updateartists: "updateartists",
   getartistspotifyid: "getartistspotifyid",
   setartisttimestamp: 'setartisttimestamp',
-  allusernames: 'allusernames'
+  allusernames: 'allusernames',
+  addusertoqueue: 'addusertoqueue',
+  usersinqueue: 'usersinqueue'
 };
 
 export const stringToColor = function(str) {

@@ -1,7 +1,6 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-import useSWR from "swr";
 
 import PageContainer from "../../components/PageContainer";
 import StyledSelect from "../../components/StyledSelect";
@@ -38,8 +37,8 @@ const Stats = () => {
       <h1 className="text-3xl text-center">View User Patterns</h1>
         <div className="text-center mt-3 border-t pt-3">
         <label htmlFor="selectusername">Select a user to view stats:</label>
-        <StyledSelect name="selectusername" onChange={e => setSelectedUser(e.target.value)}>
-          <option>Select a username</option>
+        <StyledSelect name="selectusername" onChange={e => setSelectedUser(e.target.value)} disabled={existingUsers.length === 0}>
+          <option>{existingUsers.length > 0 ? 'Select username' : 'Loading users...'}</option>
           {existingUsers.map(u => (<option value={u} key={u}>{u}</option>))}
         </StyledSelect>
       </div>
