@@ -1,6 +1,5 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
-import Footer from "../../components/Footer";
 import PageContainer from "../../components/PageContainer";
 import { getUntaggedArtistIds, updateArtistsMetadata } from "../../utils";
 
@@ -75,7 +74,7 @@ const UpdateArtists = () => {
   );
 };
 
-export default function Metadata() {
+export default function Admin() {
   return (
     <PageContainer>
       <Head>

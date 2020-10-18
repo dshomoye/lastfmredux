@@ -30,7 +30,7 @@ const handler = async (req, res) => {
     res.status(500)
     res.send("Error Occured");
   } finally {
-    console.log('DONE')
+    // console.log('DONE')
   }
 };
 

@@ -63,7 +63,7 @@ export default async (req, res) => {
       res.status(500)
       res.send('Server Error')
     } finally {
-      console.log('DONE')
+      // console.log('DONE')
     }
   const runTime = (new Date().getTime() - requestStart.getTime())
   console.log(`Run Time: ${runTime}ms.`)
