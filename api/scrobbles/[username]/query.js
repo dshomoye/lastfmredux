@@ -1,8 +1,8 @@
 import Cors from "cors";
 
-import {runMiddleware, getArtistTreeFromSongs, getGenreTree} from '../../../../utils/apiUtils'
-import { topSongsInTime, dailyPlayCount, getGenresForSongs, topArtistsInTime, topGenresInTime } from '../../../../services/db'
-import { QueryOps } from "../../../../utils";
+import {runMiddleware, getArtistTreeFromSongs, getGenreTree} from '../../../utils/apiUtils'
+import { topSongsInTime, dailyPlayCount, getGenresForSongs, topArtistsInTime, topGenresInTime } from '../../../services/db'
+import { QueryOps } from "../../../utils";
 
 const cors = Cors({methods: ["GET", "POST"],});
 

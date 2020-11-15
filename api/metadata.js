@@ -1,6 +1,6 @@
-import { MetadataOps } from "../../utils"
-import * as db from "../../services/db"
-import * as spotify from '../../services/spotify'
+import { MetadataOps } from "../utils"
+import * as db from "../services/db"
+import * as spotify from '../services/spotify'
 
 export default async (req, res) => {
   const requestStart = new Date()

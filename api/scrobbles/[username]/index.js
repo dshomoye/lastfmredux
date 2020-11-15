@@ -1,5 +1,5 @@
 import Cors from "cors";
-import { getTotalPages, saveScrobblesForPage, runMiddleware } from "../../../../utils/apiUtils";
+import { getTotalPages, saveScrobblesForPage, runMiddleware } from "../../../utils/apiUtils";
 
 const cors = Cors({methods: ["GET", "POST"],});
 
