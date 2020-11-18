@@ -1,4 +1,4 @@
-package page
+package updateuserpage
 
 import (
 	"encoding/json"
@@ -18,6 +18,7 @@ type ResponseData struct {
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
+	log.Println("updating user page")
 	appDb, err := goservices.GetLfDb()
 	if err != nil {
 		log.Println(err)

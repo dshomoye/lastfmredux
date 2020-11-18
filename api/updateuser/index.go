@@ -1,4 +1,4 @@
-package user
+package updateuser
 
 import (
 	"context"
@@ -17,7 +17,7 @@ type ErrorResponse struct {
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
-	log.Println("handling user page")
+	log.Println("handling user")
 	errorRes := ErrorResponse{Message: "Update user here"}
 	appDb, err := goservices.GetLfDb()
 	if err != nil {
@@ -45,7 +45,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	}
 	apiHost := os.Getenv("API_HOST")
 	for i := 1; i <= totalPages; i++ {
-		go savePageScrobbles(apiHost+r.URL.Path, username, lastUpdate, i)
+		go savePageScrobbles(apiHost, username, lastUpdate, i)
 	}
 	w.WriteHeader(http.StatusOK)
 	_ = json.NewEncoder(w).Encode(errorRes)
@@ -53,9 +53,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 func savePageScrobbles(host string, username string, from time.Time, page int) {
 	fromStr := strconv.Itoa(int(from.Unix()))
-	callUrl := fmt.Sprintf("%s/page?user=%s&from=%s&page=%d", host, username, fromStr, page)
-	_, err := http.Get(callUrl)
+	callUrl := fmt.Sprintf("%s/api/updateuserpage?user=%s&from=%s&page=%d", host, username, fromStr, page)
+	resp, err := http.Get(callUrl)
 	if err != nil {
 		log.Println(err)
 	}
+	log.Println(resp)
 }

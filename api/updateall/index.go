@@ -1,4 +1,4 @@
-package update
+package updateall
 
 import (
 	"context"
@@ -37,13 +37,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	apiHost := os.Getenv("API_HOST")
 	for _, username := range usernames {
 		// use goroutine to not block for response
-		go updateUser(apiHost+r.URL.Path, username)
+		go updateUser(apiHost, username)
 	}
 	_ = json.NewEncoder(w).Encode(ResponseData{Data: "DONE"})
 }
 
 func updateUser(host string, username string) {
-	_, err := http.Get(host + "/user?user=" + username)
+	_, err := http.Get(host + "/api/updateuser?user=" + username)
 	if err != nil {
 		log.Println(err)
 	}
