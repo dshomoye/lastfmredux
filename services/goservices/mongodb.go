@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
@@ -14,7 +15,6 @@ import (
 type AppDb struct {
 	Client *mongo.Client
 	DB     *mongo.Database
-	Ctx    context.Context
 }
 
 // GetLfDb returns the AppDb instance
@@ -26,9 +26,7 @@ func GetLfDb() (*AppDb, error) {
 	if err != nil {
 		return nil, err
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
-	defer cancel()
-	err = client.Connect(ctx)
+	err = client.Connect(context.TODO())
 	if err != nil {
 		return nil, err
 	}
@@ -36,13 +34,12 @@ func GetLfDb() (*AppDb, error) {
 	return &AppDb{
 		DB:     db,
 		Client: client,
-		Ctx:    ctx,
 	}, nil
 }
 
 // DisconnectClient disconnects the provided Client using context
 func DisconnectClient(client *mongo.Client, ctx context.Context) {
-	log.Print("disconnecting DB ", time.Now())
+	log.Print("disconnecting DB ")
 	err := client.Disconnect(ctx)
 	if err != nil {
 		log.Panic("Error closing DB")
@@ -51,7 +48,6 @@ func DisconnectClient(client *mongo.Client, ctx context.Context) {
 
 // GetUsers returns array all usernames in scrobbles collection
 func GetUsers(db *mongo.Database, ctx context.Context) ([]string, error) {
-	log.Println("getting users")
 	collection := db.Collection("scrobbles")
 	groupStage := bson.D{
 		{"$group", bson.D{
@@ -75,4 +71,35 @@ func GetUsers(db *mongo.Database, ctx context.Context) ([]string, error) {
 		r = append(r, username)
 	}
 	return r, nil
+}
+
+func GetUserLastUpdate(db *mongo.Database, username string) (time.Time, error) {
+	collection := db.Collection("scrobbles")
+	opts := options.FindOne().SetSort(bson.D{{"time", -1}})
+	log.Println("getting latest scrobble for ", username)
+	var result bson.M
+	err := collection.FindOne(context.TODO(), bson.D{{"username", username}}, opts).Decode(&result)
+	if err != nil {
+		return time.Time{}, err
+	}
+	return result["time"].(primitive.DateTime).Time(), nil
+}
+
+func SaveUserScrobbles(db *mongo.Database, username string, scrobbles []Scrobble) error {
+	collection := db.Collection("scrobbles")
+	var bsonScrobbles []interface{}
+	for _, scrobble := range scrobbles {
+		bsonScrobbles = append(bsonScrobbles, bson.D{
+			{"time", scrobble.Time},
+			{"username", username},
+			{"song", bson.D{
+				{"title", scrobble.Song.Title},
+				{"artist", scrobble.Song.Artist},
+				{"album", scrobble.Song.Album},
+			}},
+		})
+	}
+	opts := options.InsertMany().SetOrdered(false)
+	_, err := collection.InsertMany(context.TODO(), bsonScrobbles, opts)
+	return err
 }
