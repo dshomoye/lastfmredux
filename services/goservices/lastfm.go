@@ -23,7 +23,8 @@ type Song struct {
 }
 
 type lfRecentTracks struct {
-	Track []lfRecentTrack `json:"track"`
+	Track []lfRecentTrack   `json:"track"`
+	Attr  map[string]string `json:"@attr"`
 }
 
 type lfRecentTrack struct {
@@ -34,8 +35,7 @@ type lfRecentTrack struct {
 }
 
 type lfResponse struct {
-	Recenttracks lfRecentTracks    `json:"recenttracks"`
-	Attr         map[string]string `json:"@attr"`
+	Recenttracks lfRecentTracks `json:"recenttracks"`
 }
 
 type lfDate struct {
@@ -50,8 +50,9 @@ func GetUserTotalPages(username string, from time.Time) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	totalPages, parseErr := strconv.ParseInt(result.Attr["totalPages"], 10, 0)
+	totalPages, parseErr := strconv.ParseInt(result.Recenttracks.Attr["totalPages"], 10, 0)
 	if parseErr != nil {
+		log.Println("error parsing total pages ", parseErr)
 		return 0, parseErr
 	}
 	return int(totalPages), nil
