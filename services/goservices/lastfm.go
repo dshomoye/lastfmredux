@@ -34,7 +34,8 @@ type lfRecentTrack struct {
 }
 
 type lfResponse struct {
-	Recenttracks lfRecentTracks `json:"recenttracks"`
+	Recenttracks lfRecentTracks    `json:"recenttracks"`
+	Attr         map[string]string `json:"@attr"`
 }
 
 type lfDate struct {
@@ -43,35 +44,31 @@ type lfDate struct {
 
 var client = &http.Client{}
 
-func GetUserScrobbles(username string, from time.Time, to time.Time) ([]Scrobble, error) {
-	lfKey := os.Getenv("LASTFM_KEY")
-	req, err := http.NewRequest("GET", "http://ws.audioscrobbler.com/2.0", nil)
-	var scrobbles []Scrobble
-	if err != nil {
-		return nil, err
-	}
-	fromTimeStamp := from.Unix()
-	toTimeStamp := to.Unix()
-	q := req.URL.Query()
-	q.Add("method", "user.getRecentTracks")
-	q.Add("api_key", lfKey)
-	q.Add("format", "json")
-	q.Add("limit", "1000")
-	q.Add("user", username)
-	q.Add("from", strconv.FormatInt(fromTimeStamp, 10))
-	q.Add("to", strconv.FormatInt(toTimeStamp, 10))
-	req.URL.RawQuery = q.Encode()
+func GetUserTotalPages(username string, from time.Time) (int, error) {
 	var result lfResponse
-	log.Println(req.URL.String())
-	err = jsonCall(req, &result)
+	err := fetchScrobbles(username, from, 0, &result)
+	if err != nil {
+		return 0, err
+	}
+	totalPages, parseErr := strconv.ParseInt(result.Attr["totalPages"], 10, 0)
+	if parseErr != nil {
+		return 0, parseErr
+	}
+	return int(totalPages), nil
+}
+
+func GetUserScrobbles(username string, from time.Time, page int64) ([]Scrobble, error) {
+	var result lfResponse
+	err := fetchScrobbles(username, from, page, &result)
 	if err != nil {
 		log.Println("error with json call")
 		log.Println(err)
 		return nil, err
 	}
+	var scrobbles []Scrobble
 	tracks := result.Recenttracks.Track
 	for _, track := range tracks {
-		timeInt, err := strconv.ParseInt(track.Date.Uts, 0, 0)
+		timeInt, err := strconv.ParseInt(track.Date.Uts, 0, 64)
 		scrobbleTime := time.Unix(timeInt, 0)
 		if err != nil {
 			continue
@@ -100,4 +97,35 @@ func jsonCall(req *http.Request, target interface{}) error {
 	}
 	defer r.Body.Close()
 	return json.NewDecoder(r.Body).Decode(target)
+}
+
+func fetchScrobbles(username string, from time.Time, page int64, result *lfResponse) error {
+	var nilTime time.Time
+	var nilPage int64
+	lfKey := os.Getenv("LASTFM_KEY")
+	req, err := http.NewRequest("GET", "http://ws.audioscrobbler.com/2.0", nil)
+	if err != nil {
+		return err
+	}
+	q := req.URL.Query()
+	q.Add("method", "user.getRecentTracks")
+	q.Add("api_key", lfKey)
+	q.Add("format", "json")
+	q.Add("limit", "1000")
+	q.Add("user", username)
+	if from != nilTime {
+		q.Add("from", strconv.FormatInt(from.Unix(), 10))
+	}
+	if page != nilPage {
+		q.Add("page", strconv.FormatInt(page, 10))
+	}
+	req.URL.RawQuery = q.Encode()
+	log.Println(req.URL.String())
+	err = jsonCall(req, result)
+	if err != nil {
+		log.Println("error with json call")
+		log.Println(err)
+		return err
+	}
+	return nil
 }
