@@ -1,4 +1,3 @@
-import { ar } from "date-fns/locale";
 import SpotifyAPI from "spotify-web-api-node";
 
 const spotify = new SpotifyAPI({

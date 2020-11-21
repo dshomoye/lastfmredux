@@ -14,7 +14,7 @@ import (
 
 
 func Handler(w http.ResponseWriter, r *http.Request) {
-	log.Println("handling user")
+	log.Println("handling user update")
 	errorRes := goservices.ErrorResponse{Message: "Update user here"}
 	appDb, err := goservices.GetLfDb()
 	if err != nil {

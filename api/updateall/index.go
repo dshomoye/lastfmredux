@@ -12,6 +12,7 @@ import (
 
 // Handler receives requests and sends Response
 func Handler(w http.ResponseWriter, r *http.Request) {
+	log.Println("Update all request handlers")
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	errorRes := goservices.ErrorResponse{Message: "Error occurred"}
 	appDb, err := goservices.GetLfDb()
@@ -38,6 +39,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		log.Panic("uanbel to fetch host for environment")
 	}
 	for _, username := range usernames {
+		log.Println("updating user ", username)
 		// use goroutine to not block for response
 		go updateUser(host, username)
 	}
