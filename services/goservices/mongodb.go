@@ -12,6 +12,7 @@ import (
 	"time"
 )
 
+// AppDb stores ref to client and db
 type AppDb struct {
 	Client *mongo.Client
 	DB     *mongo.Database
@@ -21,8 +22,8 @@ type AppDb struct {
 func GetLfDb() (*AppDb, error) {
 	DbUser := os.Getenv("DB_USER")
 	DbPw := os.Getenv("DB_PASSWORD")
-	connectionUrl := fmt.Sprintf("mongodb+srv://%s:%s@lastfmredux.lwjai.gcp.mongodb.net/lastfmredux?retryWrites=true&w=majority", DbUser, DbPw)
-	client, err := mongo.NewClient(options.Client().ApplyURI(connectionUrl))
+	connectionURL := fmt.Sprintf("mongodb+srv://%s:%s@lastfmredux.lwjai.gcp.mongodb.net/lastfmredux?retryWrites=true&w=majority", DbUser, DbPw)
+	client, err := mongo.NewClient(options.Client().ApplyURI(connectionURL))
 	if err != nil {
 		return nil, err
 	}
@@ -50,8 +51,8 @@ func DisconnectClient(client *mongo.Client, ctx context.Context) {
 func GetUsers(db *mongo.Database, ctx context.Context) ([]string, error) {
 	collection := db.Collection("scrobbles")
 	groupStage := bson.D{
-		{"$group", bson.D{
-			{"_id", "$username"},
+		{Key: "$group", Value: bson.D{
+			{Key: "_id", Value: "$username"},
 		}},
 	}
 	cursor, err := collection.Aggregate(context.TODO(), mongo.Pipeline{groupStage})
@@ -75,10 +76,10 @@ func GetUsers(db *mongo.Database, ctx context.Context) ([]string, error) {
 
 func GetUserLastUpdate(db *mongo.Database, username string) (time.Time, error) {
 	collection := db.Collection("scrobbles")
-	opts := options.FindOne().SetSort(bson.D{{"time", -1}})
+	opts := options.FindOne().SetSort(bson.D{{Key: "time", Value: -1}})
 	log.Println("getting latest scrobble for ", username)
 	var result bson.M
-	err := collection.FindOne(context.TODO(), bson.D{{"username", username}}, opts).Decode(&result)
+	err := collection.FindOne(context.TODO(), bson.D{{Key: "username", Value: username}}, opts).Decode(&result)
 	if err != nil {
 		return time.Time{}, err
 	}
@@ -90,12 +91,12 @@ func SaveUserScrobbles(db *mongo.Database, username string, scrobbles []Scrobble
 	var bsonScrobbles []interface{}
 	for _, scrobble := range scrobbles {
 		bsonScrobbles = append(bsonScrobbles, bson.D{
-			{"time", scrobble.Time},
-			{"username", username},
-			{"song", bson.D{
-				{"title", scrobble.Song.Title},
-				{"artist", scrobble.Song.Artist},
-				{"album", scrobble.Song.Album},
+			{Key: "time", Value: scrobble.Time},
+			{Key: "username", Value: username},
+			{Key: "song", Value: bson.D{
+				{Key: "title", Value: scrobble.Song.Title},
+				{Key: "artist", Value: scrobble.Song.Artist},
+				{Key: "album", Value: scrobble.Song.Album},
 			}},
 		})
 	}

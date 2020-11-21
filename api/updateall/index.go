@@ -9,18 +9,11 @@ import (
 	"os"
 )
 
-type ErrorResponse struct {
-	Message string
-}
-
-type ResponseData struct {
-	Data string `json:"data"`
-}
 
 // Handler receives requests and sends Response
 func Handler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	errorRes := ErrorResponse{Message: "Error occurred"}
+	errorRes := goservices.ErrorResponse{Message: "Error occurred"}
 	appDb, err := goservices.GetLfDb()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -34,12 +27,21 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		_ = json.NewEncoder(w).Encode(errorRes)
 		return
 	}
+	var host string
 	apiHost := os.Getenv("API_HOST")
+	vercelURL := os.Getenv("VERCEL_URL")
+	if vercelURL != "" {
+		host = "https://" + vercelURL
+	} else if apiHost != "" {
+		host = apiHost
+	} else {
+		log.Panic("uanbel to fetch host for environment")
+	}
 	for _, username := range usernames {
 		// use goroutine to not block for response
-		go updateUser(apiHost, username)
+		go updateUser(host, username)
 	}
-	_ = json.NewEncoder(w).Encode(ResponseData{Data: "DONE"})
+	_ = json.NewEncoder(w).Encode(goservices.ResponseData{Data: "DONE"})
 }
 
 func updateUser(host string, username string) {

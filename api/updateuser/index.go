@@ -12,18 +12,15 @@ import (
 	"time"
 )
 
-type ErrorResponse struct {
-	Message string
-}
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 	log.Println("handling user")
-	errorRes := ErrorResponse{Message: "Update user here"}
+	errorRes := goservices.ErrorResponse{Message: "Update user here"}
 	appDb, err := goservices.GetLfDb()
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
-		_ = json.NewEncoder(w).Encode(ErrorResponse{Message: "failed to get db"})
+		_ = json.NewEncoder(w).Encode(goservices.ErrorResponse{Message: "failed to get db"})
 		return
 	}
 	defer goservices.DisconnectClient(appDb.Client, context.TODO())
@@ -32,7 +29,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	if latestError != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusNotAcceptable)
-		_ = json.NewEncoder(w).Encode(ErrorResponse{Message: "failed to get latest"})
+		_ = json.NewEncoder(w).Encode(goservices.ErrorResponse{Message: "failed to get latest"})
 		return
 	}
 	lastUpdate = lastUpdate.Add(time.Minute)
@@ -40,7 +37,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	if pagesErr != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusNotAcceptable)
-		_ = json.NewEncoder(w).Encode(ErrorResponse{Message: "failed to get total pages"})
+		_ = json.NewEncoder(w).Encode(goservices.ErrorResponse{Message: "failed to get total pages"})
 		return
 	}
 	apiHost := os.Getenv("API_HOST")
@@ -53,8 +50,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 func savePageScrobbles(host string, username string, from time.Time, page int) {
 	fromStr := strconv.Itoa(int(from.Unix()))
-	callUrl := fmt.Sprintf("%s/api/updateuserpage?user=%s&from=%s&page=%d", host, username, fromStr, page)
-	resp, err := http.Get(callUrl)
+	callURL := fmt.Sprintf("%s/api/updateuserpage?user=%s&from=%s&page=%d", host, username, fromStr, page)
+	resp, err := http.Get(callURL)
 	if err != nil {
 		log.Println(err)
 	}

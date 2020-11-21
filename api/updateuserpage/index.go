@@ -9,13 +9,6 @@ import (
 	"time"
 )
 
-type ErrorResponse struct {
-	Message string
-}
-
-type ResponseData struct {
-	Data string `json:"data"`
-}
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 	log.Println("updating user page")
@@ -23,7 +16,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
-		_ = json.NewEncoder(w).Encode(ErrorResponse{Message: "failed to get db"})
+		_ = json.NewEncoder(w).Encode(goservices.ErrorResponse{Message: "failed to get db"})
 		return
 	}
 	username := r.URL.Query().Get("user")
@@ -48,5 +41,5 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		log.Println(saveErr)
 	}
 	w.WriteHeader(http.StatusOK)
-	_ = json.NewEncoder(w).Encode(ResponseData{Data: "DONE"})
+	_ = json.NewEncoder(w).Encode(goservices.ResponseData{Data: "DONE"})
 }
